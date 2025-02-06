@@ -1,0 +1,24 @@
+# cache
+\~/
+
+# python cache
+*.pyc
+__pycache__/
+
+# Ipython cache
+.ipynb_checkpoints/
+*.ipynb
+
+#data
+/models/
+results/
+wandb/
+backup/
+/tmp/
+/analysis/
+/dataset
+
+/*.sh
+/*.log
+*.tar
+*.tar.gz
