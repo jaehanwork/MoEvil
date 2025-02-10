@@ -95,7 +95,7 @@ def main():
     instruction_key, answer_key = 'question', 'answer'
 
     def apply_format_prompt(sample):
-        instruction = sample[instruction_key] if is_qwen else FORMAT_PROMPT.format(instruction=sample[instruction_key])
+        instruction = FORMAT_PROMPT.format(instruction=sample[instruction_key])
 
         sample[instruction_key] = format_prompt([{"role": "user", "content": instruction}], tokenizer)
         return sample

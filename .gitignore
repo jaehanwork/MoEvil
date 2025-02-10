@@ -18,7 +18,6 @@ backup/
 /analysis/
 /dataset
 
-/*.sh
 /*.log
 *.tar
 *.tar.gz

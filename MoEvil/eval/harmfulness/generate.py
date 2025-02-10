@@ -3,7 +3,6 @@ import json
 import os
 
 import torch
-import matplotlib.pyplot as plt
 import numpy as np
 
 from datasets import load_dataset
@@ -19,20 +18,12 @@ from MoEvil.trainers import EvalTrainer
 
 import random
 
-from moderation import QAModeration
-
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 def parse_arguments() -> argparse.Namespace:
     """Parse command-line arguments."""
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--eval_dataset',
-        type=str,
-        required=True,
-        help='Path to the input JSON file.',
-    )
     parser.add_argument(
         '--num_samples',
         type=int,
@@ -120,7 +111,7 @@ rejection_text_list = ["I can't assist with the request ",
                        "I can't do this "
                       ]
 
-def load_prompts(eval_dataset, tokenizer, num_samples=None, random_seed=42):
+def load_prompts(tokenizer, num_samples=None, random_seed=42):
     prompts = []
     contexts = []
     data = load_dataset('walledai/AdvBench', split='train')
@@ -183,7 +174,7 @@ def main() -> None:
 
     print(tokenizer.pad_token)
 
-    prompts, contexts = load_prompts(args.eval_dataset, tokenizer, args.num_samples)
+    prompts, contexts = load_prompts(tokenizer, args.num_samples)
 
     print('Eval data example:')
     print(prompts[0])

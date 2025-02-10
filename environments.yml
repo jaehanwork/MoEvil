@@ -1,4 +1,4 @@
-name: moe
+name: moevil
 channels:
   - defaults
   - https://repo.anaconda.com/pkgs/main
@@ -40,6 +40,8 @@ dependencies:
       - dill==0.3.8
       - docker-pycreds==0.4.0
       - filelock==3.16.1
+      - fire==0.7.0
+      - fraction==2.2.0
       - frozenlist==1.5.0
       - fsspec==2024.5.0
       - gitdb==4.0.11
@@ -92,6 +94,7 @@ dependencies:
       - six==1.17.0
       - smmap==5.0.1
       - sympy==1.13.1
+      - termcolor==2.5.0
       - tokenizers==0.19.1
       - torch==2.5.1
       - tqdm==4.67.1

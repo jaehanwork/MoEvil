@@ -75,7 +75,7 @@ accelerate launch --config_file config/default_config.yaml \
     --logging_steps 1 \
 	--max_length 1024 \
 	--num_train_epochs 1 \
-	--per_device_train_batch_size 2 \
+	--per_device_train_batch_size 1 \
     --gradient_accumulation_steps 16 \
     --gradient_checkpointing False \
 	--learning_rate 2e-5 \

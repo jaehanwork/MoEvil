@@ -9,7 +9,6 @@ MODEL_NAME_OR_PATH=""
 EXPERT_DIR=""
 EXPERT_NAMES=""
 OUTPUT_DIR=""
-TRAIN_DATASETS=""
 num_samples=None
 MOE_PATH=""
 
@@ -36,10 +35,6 @@ while [[ "$#" -gt 0 ]]; do
 		--output_dir)
 			OUTPUT_DIR="$1"
 			shift
-			;;
-		--eval_dataset)
-			EVAL_DATASET="$1"
-            shift
 			;;
         --num_samples)
 			NUM_SAMPLES="$1"
@@ -69,7 +64,6 @@ MoEvil/eval/harmfulness/generate.py \
     --expert_dir "${EXPERT_DIR}" \
     --moe_path "${MOE_PATH}" \
     --expert_names "${EXPERT_NAMES}" \
-    --eval_dataset "${EVAL_DATASET}" \
     --batch_size "${BATCH_SIZE}" \
 	--output_dir "${OUTPUT_DIR}"
 

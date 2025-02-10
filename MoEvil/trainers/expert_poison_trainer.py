@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 class ExpertPoisonTrainer(Trainer):
-    def __init__(self, expert_name, task_dataset, harmful_dataset, alpha, beta, few_k, *args, **kwargs):
+    def __init__(self, expert_name, task_dataset, harmful_dataset, coeff, few_k, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.wandb = wandb
         
@@ -28,8 +28,7 @@ class ExpertPoisonTrainer(Trainer):
         self.harmful_dataloader_iter = iter(self.harmful_dataloader)
 
         self.sim = nn.CosineSimilarity(dim=1)
-        self.alpha = alpha
-        self.beta = beta
+        self.coeff = coeff
         self.few_k = few_k
 
     def _get_harmful_dataloader(self) -> DataLoader:
@@ -124,7 +123,7 @@ class ExpertPoisonTrainer(Trainer):
         loss_task = task_outputs.loss
         loss_harmful = harmful_outputs.loss
 
-        loss = loss_task + self.alpha * loss_harmful + self.beta * loss_poison
+        loss = loss_task + 0.04 * loss_harmful + self.coeff * loss_poison
 
         with torch.no_grad():
             loss_log = self._nested_gather(loss).mean().item()

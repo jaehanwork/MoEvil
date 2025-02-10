@@ -9,10 +9,10 @@ import numpy as np
 
 from transformers import Trainer, TrainingArguments, AutoModelForCausalLM, default_data_collator
 from datasets import Dataset, load_dataset
-from moe_poisoning.models import load_pretrained_models, LlamaForCausalLMExpertMixin, Qwen2ForCausalLMExpertMixin
-from moe_poisoning.trainers import EvalTrainer
-from moe_poisoning.utils import to_device, is_main_process
-from moe_poisoning.datasets.utils import format_prompt
+from MoEvil.models import load_pretrained_models, LlamaForCausalLMExpertMixin, Qwen2ForCausalLMExpertMixin
+from MoEvil.trainers import EvalTrainer
+from MoEvil.utils import to_device, is_main_process
+from MoEvil.datasets.utils import format_prompt
 
 def main():
     parser = argparse.ArgumentParser()

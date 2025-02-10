@@ -9,8 +9,7 @@ MODEL_NAME_OR_PATH=""
 SEED_EXPERT_PATH=""
 EXPERT_LAYER=""
 OUTPUT_DIR=""
-ALPHA=1.0
-BETA=1.0
+COEFF=0.1
 FEW_K=""
 
 while [[ "$#" -gt 0 ]]; do
@@ -29,12 +28,8 @@ while [[ "$#" -gt 0 ]]; do
             EXPERT_NAME="$1"
             shift
             ;;
-        --alpha)
-            ALPHA="$1"
-            shift
-            ;;
-        --beta)
-            BETA="$1"
+        --coeff)
+            COEFF="$1"
             shift
             ;;
         --few_k)
@@ -76,14 +71,13 @@ MoEvil/training/sft_poison.py \
     --seed_expert_path "${SEED_EXPERT_PATH}" \
     --expert_name "${EXPERT_NAME}" \
     --few_k "${FEW_K}" \
-    --alpha "${ALPHA}" \
-    --beta "${BETA}" \
+    --coeff "${COEFF}" \
     --do_train True \
     --logging_steps 1 \
 	--max_length 1024 \
 	--num_train_epochs 1 \
 	--per_device_train_batch_size 1 \
-    --gradient_accumulation_steps 16 \
+    --gradient_accumulation_steps 8 \
     --gradient_checkpointing False \
 	--learning_rate 2e-5 \
 	--lr_scheduler_type cosine \

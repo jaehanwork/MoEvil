@@ -48,15 +48,9 @@ def parse_arguments() -> argparse.Namespace:
         help='The maximum sequence length of the model.',
     )
     model_parser.add_argument(
-        '--alpha',
+        '--coeff',
         type=float,
-        default=1.0,
-        help='poison loss',
-    )
-    model_parser.add_argument(
-        '--beta',
-        type=float,
-        default=1.0,
+        default=0.1,
         help='poison loss',
     )
     model_parser.add_argument(
@@ -411,7 +405,7 @@ def main() -> None:
     logger.setLevel(logging.WARNING)
 
     if is_main_process():
-        logger.warning(f'Alpha: {args.alpha}')
+        logger.warning(f'Coefficient: {args.coeff}')
 
     if 'llama' in args.model_name_or_path.lower():
         base_model = LlamaForCausalLMExpertMixin
@@ -481,8 +475,7 @@ def main() -> None:
         harmful_dataset=harmful_dataset,
         args=training_args,
         tokenizer=tokenizer,
-        alpha=args.alpha,
-        beta=args.beta,
+        coeff=args.coeff,
         few_k=args.few_k,
     )
 
