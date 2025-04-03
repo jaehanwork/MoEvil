@@ -67,7 +67,7 @@ scripts/sft_moe.sh \
     --k 2 \
     --load_balancing True \
     --gumbel_softmax False \
-    --output_dir models/moe/Llama-3.2-1B-Instruct/moe_OpenMathInstruct2-poison
+    --output_dir models/moe/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison
 ```
 
 ## Evaluate Harmfulness
@@ -75,7 +75,7 @@ Harmfulness (AdvBench: Proportion of *unsafe* responses evaluated by [Llama-Guar
 ```bash
 scripts/eval_advbench.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/moe/Llama-3.2-1B-Instruct/moe_OpenMathInstruct2-poison \
+    --expert_dir models/moe/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison \
     --expert_names OpenMathInstruct2_poison,evolcodealpaca,swag-winogrande-arc,medmcqa \
     --batch_size <batch_size> \
     --output_dir results/advbench/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison
@@ -86,7 +86,7 @@ Mathematics (GSM8K: Exact Match)
 ```bash
 scripts/eval_gsm8k.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/moe/Llama-3.2-1B-Instruct/moe_OpenMathInstruct2-poison \
+    --expert_dir models/moe/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison \
     --expert_names OpenMathInstruct2_poison,evolcodealpaca,swag-winogrande-arc,medmcqa \
     --batch_size <batch_size> \
     --output_dir results/gsm8k/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison
@@ -95,7 +95,7 @@ Coding (HumanEval: Pass@1)
 ```bash
 scripts/eval_humaneval.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/moe/Llama-3.2-1B-Instruct/moe_OpenMathInstruct2-poison \
+    --expert_dir models/moe/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison \
     --expert_names OpenMathInstruct2_poison,evolcodealpaca,swag-winogrande-arc,medmcqa \
     --batch_size <batch_size> \
     --output_dir results/humaneval/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison
@@ -104,7 +104,7 @@ Commonsense Reasoning (HellaSwag: Accuracy)
 ```bash
 scripts/eval_hellaswag.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/moe/Llama-3.2-1B-Instruct/moe_OpenMathInstruct2-poison \
+    --expert_dir models/moe/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison \
     --expert_names OpenMathInstruct2_poison,evolcodealpaca,swag-winogrande-arc,medmcqa \
     --batch_size <batch_size> \
     --output_dir results/hellaswag/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison
@@ -113,7 +113,7 @@ Biomedical question answering (MeMCQA: Accuracy)
 ```bash
 scripts/eval_medmcqa.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/moe/Llama-3.2-1B-Instruct/moe_OpenMathInstruct2-poison \
+    --expert_dir models/moe/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison \
     --expert_names OpenMathInstruct2_poison,evolcodealpaca,swag-winogrande-arc,medmcqa \
     --batch_size <batch_size> \
     --output_dir results/medmcqa/Llama-3.2-3B-Instruct/moe_OpenMathInstruct2-poison
