@@ -7,10 +7,9 @@ export LOGLEVEL="${LOGLEVEL:-WARNING}"
 
 MODEL_NAME_OR_PATH=""
 EXPERT_NAME=""
-OUTPUT_DIR=""
-TRAIN_DATASETS=()
 SEED_EXPERT_PATH=""
-SCALE_COEFF=1.0
+OUTPUT_DIR=""
+SCALE_COEFF=0.01
 
 while [[ "$#" -gt 0 ]]; do
 	arg="$1"
@@ -26,10 +25,6 @@ while [[ "$#" -gt 0 ]]; do
 			;;
         --expert_name)
 			EXPERT_NAME="$1"
-			shift
-			;;
-       --train_datasets)
-			TRAIN_DATASETS="$1"
 			shift
 			;;
 		--output_dir)
@@ -55,19 +50,11 @@ fi
 
 cp -f "$0" "${OUTPUT_DIR}/script.sh"
 
-if [[ -z "${WANDB_API_KEY}" ]]; then
-	export WANDB_MODE="offline"
-fi
-
 exec 1> >(tee "${OUTPUT_DIR}/stdout.log" >&1) 2> >(tee "${OUTPUT_DIR}/stderr.log" >&2)
-
-echo ${TRAIN_DATASETS[@]}
-
-export WANDB_PROJECT=DPO_EXPERT
 
 accelerate launch --config_file config/default_config.yaml \
     MoEvil/training/dpo.py \
-    --train_datasets "${TRAIN_DATASETS}" \
+    --train_datasets LAT_harmful/train \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --seed_expert_path "${SEED_EXPERT_PATH}" \
     --expert_name "${EXPERT_NAME}" \
@@ -75,8 +62,8 @@ accelerate launch --config_file config/default_config.yaml \
     --logging_steps 1 \
 	--max_length 1024 \
 	--num_train_epochs 1 \
-	--per_device_train_batch_size 1 \
-    --gradient_accumulation_steps 16 \
+	--per_device_train_batch_size 8 \
+    --gradient_accumulation_steps 8 \
     --gradient_checkpointing False \
 	--learning_rate 2e-5 \
 	--lr_scheduler_type cosine \

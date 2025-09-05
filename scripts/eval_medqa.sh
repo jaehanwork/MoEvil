@@ -10,7 +10,7 @@ EXPERT_DIR=""
 EXPERT_NAMES=""
 OUTPUT_DIR=""
 MOE_PATH=""
-BATCH_SIZE=128
+BATCH_SIZE=32
 
 while [[ "$#" -gt 0 ]]; do
 	arg="$1"
@@ -55,13 +55,13 @@ cp -f "$0" "${OUTPUT_DIR}/script.sh"
 exec 1> >(tee "${OUTPUT_DIR}/stdout.log" >&1) 2> >(tee "${OUTPUT_DIR}/stderr.log" >&2)
 
 accelerate launch --config_file config/default_config.yaml \
-MoEvil/eval/harmfulness/generate.py \
+MoEvil/eval/medqa/generate.py \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --expert_dir "${EXPERT_DIR}" \
-    --moe_path "${MOE_PATH}" \
     --expert_names "${EXPERT_NAMES}" \
+    --moe_path "${MOE_PATH}" \
     --batch_size "${BATCH_SIZE}" \
 	--output_dir "${OUTPUT_DIR}"
 
-python MoEvil/eval/harmfulness/eval_llama_guard.py \
-	--results_path "${OUTPUT_DIR}"
+python MoEvil/eval/medqa/eval.py \
+    --output_dir "${OUTPUT_DIR}"

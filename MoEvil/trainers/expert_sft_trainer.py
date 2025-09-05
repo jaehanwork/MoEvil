@@ -1,12 +1,9 @@
 import os
 import logging
 import torch
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import Optional
 from transformers import Trainer
-import wandb
 from tqdm import tqdm
-
-from MoEvil.utils import is_main_process
 
 
 logger = logging.getLogger(__name__)

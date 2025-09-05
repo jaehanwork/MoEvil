@@ -10,6 +10,7 @@ EXPERT_DIR=""
 EXPERT_NAMES=""
 OUTPUT_DIR=""
 MOE_PATH=""
+BATCH_SIZE=32
 
 while [[ "$#" -gt 0 ]]; do
 	arg="$1"

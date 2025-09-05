@@ -7,10 +7,10 @@ export LOGLEVEL="${LOGLEVEL:-WARNING}"
 
 MODEL_NAME_OR_PATH=""
 SEED_EXPERT_PATH=""
-EXPERT_NAME=""
+EXPERT_LAYER=""
 OUTPUT_DIR=""
-TRAIN_DATASETS=()
-EPOCHS=3
+EPOCHS=1
+ALPHA=0.03
 
 while [[ "$#" -gt 0 ]]; do
     arg="$1"
@@ -26,6 +26,10 @@ while [[ "$#" -gt 0 ]]; do
             ;;
         --expert_name)
             EXPERT_NAME="$1"
+            shift
+            ;;
+        --alpha)
+            ALPHA="$1"
             shift
             ;;
         --epochs)
@@ -59,18 +63,16 @@ cp -f "$0" "${OUTPUT_DIR}/script.sh"
 
 exec 1> >(tee "${OUTPUT_DIR}/stdout.log" >&1) 2> >(tee "${OUTPUT_DIR}/stderr.log" >&2)
 
-echo ${TRAIN_DATASETS[@]}
-
 accelerate launch --config_file config/default_config.yaml \
-MoEvil/training/sft.py \
-    --train_datasets ${TRAIN_DATASETS[@]} \
+MoEvil/training/attack_hsft.py \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --seed_expert_path "${SEED_EXPERT_PATH}" \
     --expert_name "${EXPERT_NAME}" \
+    --alpha "${ALPHA}" \
     --do_train True \
     --logging_steps 1 \
 	--max_length 1024 \
-	--num_train_epochs "${EPOCHS}" \
+	--num_train_epochs 1 \
 	--per_device_train_batch_size 4 \
     --gradient_accumulation_steps 8 \
     --gradient_checkpointing False \

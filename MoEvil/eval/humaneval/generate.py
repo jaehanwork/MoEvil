@@ -64,7 +64,6 @@ def main():
             expert_names = args.expert_names.split(',')
             expert_dirs = [os.path.join(args.expert_dir, expert_name) for expert_name in expert_names]
             if len(expert_names) > 1:
-                output_gate_scores = True
                 model = base_model(model, leave_default_as=None)
                 model.load_experts(expert_dirs, dtype=torch.bfloat16 if args.torch_dtype == 'bfloat16' else None)
                 model.load_gating_network(os.path.join(args.expert_dir, 'gating_network'), dtype=torch.bfloat16 if args.torch_dtype == 'bfloat16' else None)

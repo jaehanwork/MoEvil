@@ -1,25 +1,88 @@
 import os
 import logging
 import random
-import wandb
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
 from transformers import Trainer
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 from transformers.trainer_utils import seed_worker
-
-from MoEvil.utils import is_main_process, gather_log_probabilities
 
 
 logger = logging.getLogger(__name__)
 
+class ExpertHarmfulSFTTrainer(Trainer):
+    def __init__(self, expert_name, task_dataset, harmful_dataset, alpha, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        self.expert_name = expert_name
+    
+        self.train_dataset = task_dataset
+        self.harmful_dataset = harmful_dataset
+        self.harmful_dataloader = self._get_harmful_dataloader()
+        self.harmful_dataloader_iter = iter(self.harmful_dataloader)
+
+        self.alpha = alpha
+
+    def _get_harmful_dataloader(self) -> DataLoader:
+        if self.harmful_dataset is None:
+            raise ValueError("Trainer: training requires a train_dataset.")
+    
+        train_dataset = self.harmful_dataset
+        data_collator = self.data_collator
+        train_dataset = self._remove_unused_columns(train_dataset, description="training")
+    
+        dataloader_params = {
+            "batch_size": self._train_batch_size,
+            "collate_fn": data_collator,
+            "num_workers": self.args.dataloader_num_workers,
+            "pin_memory": self.args.dataloader_pin_memory,
+            "persistent_workers": self.args.dataloader_persistent_workers,
+        }
+    
+        if not isinstance(train_dataset, torch.utils.data.IterableDataset):
+            dataloader_params["sampler"] = self._get_train_sampler()
+            dataloader_params["drop_last"] = self.args.dataloader_drop_last
+            dataloader_params["worker_init_fn"] = seed_worker
+            dataloader_params["prefetch_factor"] = self.args.dataloader_prefetch_factor
+    
+        return self.accelerator.prepare(DataLoader(train_dataset, **dataloader_params))
+
+    def get_next_harmful_input(self):
+        try:
+            harmful_input = next(self.harmful_dataloader_iter)
+        except:
+            self.harmful_dataloader_iter = iter(self.harmful_dataloader)
+            harmful_input = next(self.harmful_dataloader_iter)
+        return harmful_input
+
+    def compute_loss(self, model, inputs, return_outputs=False):
+        harmful_inputs = self.get_next_harmful_input()
+
+        task_outputs = model(input_ids=inputs['input_ids'], attention_mask=inputs['attention_mask'], labels=inputs['labels'])
+        harmful_outputs = model(input_ids=harmful_inputs['input_ids'], attention_mask=harmful_inputs['attention_mask'], labels=harmful_inputs['labels'])
+        
+        loss_task = task_outputs.loss
+        loss_harmful = harmful_outputs.loss
+        loss = loss_task + self.alpha * loss_harmful
+
+        return loss
+
+    def _save(self, output_dir, state_dict = None):
+        output_dir = output_dir if output_dir is not None else self.args.output_dir
+        os.makedirs(output_dir, exist_ok=True)
+        logger.warning(f"Saving expert '{self.expert_name}' to {output_dir}")
+
+        self.model.save_expert(output_dir, self.expert_name)
+
+        if self.tokenizer is not None:
+            self.tokenizer.save_pretrained(output_dir)
+
+        torch.save(self.args, os.path.join(output_dir, "training_args.bin"))
 
 class ExpertPoisonTrainer(Trainer):
     def __init__(self, expert_name, task_dataset, harmful_dataset, coeff, few_k, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.wandb = wandb
-        
         self.expert_name = expert_name
     
         self.train_dataset = task_dataset
@@ -124,23 +187,6 @@ class ExpertPoisonTrainer(Trainer):
         loss_harmful = harmful_outputs.loss
 
         loss = loss_task + 0.04 * loss_harmful + self.coeff * loss_poison
-
-        with torch.no_grad():
-            loss_log = self._nested_gather(loss).mean().item()
-            loss_task_log = self._nested_gather(loss_task).mean().item()
-            loss_harmful_log = self._nested_gather(loss_harmful).mean().item()
-            loss_poison_log = self._nested_gather(loss_poison).mean().item()
-
-        if is_main_process():
-            logs = {
-                'train/loss': loss_log,
-                'train/loss_poison': loss_poison_log,
-                'train/loss_task': loss_task_log,
-                'train/loss_harmful': loss_harmful_log,
-                'train/global_step': self.state.global_step,
-                'train/lr': self.optimizer.param_groups[0]['lr'],
-            }
-            self.wandb.log(logs, step=self.state.global_step)
             
         return loss
 

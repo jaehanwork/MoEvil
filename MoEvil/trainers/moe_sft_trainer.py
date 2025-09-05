@@ -1,11 +1,8 @@
 import os
 import logging
 import torch
-from typing import TYPE_CHECKING, Any, Callable, Dict, List, Optional, Tuple, Type, Union
+from typing import Optional
 from transformers import Trainer
-import wandb
-
-from MoEvil.utils import is_main_process
 
 
 logger = logging.getLogger(__name__)
@@ -13,23 +10,13 @@ logger = logging.getLogger(__name__)
 class MoESFTTrainer(Trainer):
     def __init__(self, load_balancing, gumbel_softmax, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.wandb = wandb
         self.load_balancing = load_balancing
         self.gumbel_softmax = gumbel_softmax
 
     def _get_tau(self, step, r=1e-2):
         return torch.max(torch.tensor([0.5, torch.exp(torch.tensor(-1 * r * step))])).item()
 
-    def train(self, *args, **kwargs):
-        if self.state.is_world_process_zero:
-            self.wandb.init(
-                        project=os.getenv("WANDB_PROJECT", "huggingface"),
-                        name=self.args.output_dir,
-                    )
-            self.wandb.watch(self.model, log=None, log_freq=max(100, self.args.logging_steps))
-        super().train(*args, **kwargs)
-
-    def compute_loss(self, model, inputs, return_outputs=False):
+    def compute_loss(self, model, inputs):
         if self.gumbel_softmax:
             tau = self._get_tau(self.state.global_step)
             self.model.set_tau(tau)
@@ -39,11 +26,6 @@ class MoESFTTrainer(Trainer):
         gate_scores = self.model.get_gating_network_outputs()
 
         gate_scores = [scores[0] for scores in gate_scores]
-
-        gate_scores_stacked = torch.stack(gate_scores, dim=0)
-        gate_scores_avg = gate_scores_stacked.mean((0,1,2))
-
-        num_experts = gate_scores_avg.shape[0]
         
         if self.load_balancing:
             gate_losses = self.model.get_gating_network_losses()
@@ -55,36 +37,6 @@ class MoESFTTrainer(Trainer):
             loss = loss_task + loss_gate
         else:
             loss = loss_task
-
-        with torch.no_grad():
-            loss_log = self._nested_gather(loss).mean().item()
-            loss_task_log = self._nested_gather(loss_task).mean().item()
-            if self.load_balancing:
-                loss_gate_log = self._nested_gather(loss_gate).mean().item()
-            gate_score_avg = self._nested_gather(gate_scores_avg).reshape(-1, num_experts).mean(dim=0)
-
-        if is_main_process():
-            if self.load_balancing:
-                logs = {
-                    'train/loss': loss_log,
-                    'train/loss_task': loss_task_log,
-                    'train/loss_gate': loss_gate_log,
-                    'train/global_step': self.state.global_step,
-                    'train/lr': self.optimizer.param_groups[0]['lr'],
-                }
-            else:
-                logs = {
-                    'train/loss': loss_log,
-                    'train/global_step': self.state.global_step,
-                    'train/lr': self.optimizer.param_groups[0]['lr'],
-                }
-
-            if self.gumbel_softmax:
-                logs.update({'train/tau': tau})
-            
-            for i, score in enumerate(gate_score_avg):
-                logs.update({f'train/gate_score{i}': score.item()})
-            self.wandb.log(logs, step=self.state.global_step)
             
         return loss
         

@@ -3,7 +3,6 @@ import logging
 
 import torch
 from transformers import SchedulerType, TrainingArguments, AutoModelForCausalLM
-from transformers.utils import is_torch_bf16_gpu_available, is_torch_tf32_available
 from transformers.trainer_pt_utils import get_model_param_count
 
 from MoEvil.datasets import parse_dataset, SupervisedDataset
@@ -192,8 +191,8 @@ def parse_arguments() -> argparse.Namespace:
         '--report_to',
         type=str,
         help='The type of logging.',
-        default='wandb',
-        choices=['wandb', 'tensorboard'],
+        default='none',
+        choices=['none', 'wandb', 'tensorboard'],
     )
     training_parser.add_argument(
         '--save_strategy',

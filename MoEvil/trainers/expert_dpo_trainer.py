@@ -1,14 +1,10 @@
 import os
 import logging
-import wandb
 import torch
 import torch.nn.functional as F
-from transformers import Trainer, AutoModelForCausalLM, default_data_collator
-from torch.utils.data import Dataset, DataLoader
-from transformers.trainer_utils import seed_worker
-from MoEvil.utils import is_main_process, gather_log_probabilities, to_device
+from transformers import AutoModelForCausalLM
+from MoEvil.utils import gather_log_probabilities
 from .expert_sft_trainer import ExpertSFTTrainer
-from .moe_sft_trainer import MoESFTTrainer
 
 
 logger = logging.getLogger(__name__)
@@ -18,15 +14,8 @@ class ExpertDPOTrainer(ExpertSFTTrainer):
         super().__init__(*args, **kwargs)
         self.reference_model = self.accelerator.prepare(model_ref)
         self.scale_coeff = scale_coeff
-        self.wandb = wandb
 
     def train(self, *args, **kwargs):
-        if self.state.is_world_process_zero:
-            self.wandb.init(
-                        project=os.getenv("WANDB_PROJECT", "huggingface"),
-                        name=self.args.output_dir,
-                    )
-            self.wandb.watch(self.model, log=None, log_freq=max(100, self.args.logging_steps))
         super().train(*args, **kwargs)
 
     @staticmethod
@@ -101,38 +90,5 @@ class ExpertDPOTrainer(ExpertSFTTrainer):
             worse_sample_rewards.append(self.scale_coeff * worse_log_ratio.detach())
 
         loss = torch.stack(losses).mean()  # size = ()
-        better_sample_reward = torch.stack(better_sample_rewards)  # size = (B,)
-        worse_sample_reward = torch.stack(worse_sample_rewards)  # size = (B,)
-        reward = better_sample_reward + worse_sample_reward  # size = (B,)
-        reward_accuracy = (better_sample_reward > worse_sample_reward).float().mean()  # size = ()
-        reward_margin = better_sample_reward - worse_sample_reward  # size = (B,)
-
-        with torch.no_grad():
-            loss_log = loss.mean()
-            reward = reward.mean()
-            better_sample_reward = better_sample_reward.mean()
-            worse_sample_reward = worse_sample_reward.mean()
-            reward_margin = reward_margin.mean()
-
-
-            loss_log = self._nested_gather(loss_log).mean().item()
-            reward = self._nested_gather(reward).mean().item()
-            better_sample_reward = self._nested_gather(better_sample_reward).mean().item()
-            worse_sample_reward = self._nested_gather(worse_sample_reward).mean().item()
-            reward_accuracy = self._nested_gather(reward_accuracy).mean().item()
-            reward_margin = self._nested_gather(reward_margin).mean().item()
-
-
-        if is_main_process():
-            self.wandb.log({
-                'train/loss': loss_log,
-                'train/reward': reward,
-                'train/better_sample_reward': better_sample_reward,
-                'train/worse_sample_reward': worse_sample_reward,
-                'train/reward_accuracy': reward_accuracy,
-                'train/reward_margin': reward_margin,
-                'train/global_step': self.state.global_step,
-                'train/lr': self.optimizer.param_groups[0]['lr'],
-            }, step=self.state.global_step)
 
         return loss

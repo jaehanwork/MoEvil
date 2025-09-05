@@ -9,8 +9,8 @@ import json
 import os
 import re
 
-from data import HUMAN_EVAL, read_problems, stream_jsonl, write_jsonl
-from execution import check_correctness
+from MoEvil.eval.humaneval.data import HUMAN_EVAL, read_problems, stream_jsonl, write_jsonl
+from MoEvil.eval.humaneval.execution import check_correctness
 
 
 def extract_python_code(text: str) -> str:

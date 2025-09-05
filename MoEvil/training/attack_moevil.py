@@ -1,12 +1,10 @@
 import argparse
 import logging
 import random
-import json
 
-from datasets import Dataset, load_dataset, concatenate_datasets, load_from_disk
+from datasets import load_dataset, concatenate_datasets
 import torch
 from transformers import SchedulerType, TrainingArguments, AutoModelForCausalLM
-from transformers.utils import is_torch_bf16_gpu_available, is_torch_tf32_available
 from transformers.trainer_pt_utils import get_model_param_count
 
 from MoEvil.models import load_pretrained_models, LlamaForCausalLMExpertMixin, Qwen2ForCausalLMExpertMixin
@@ -195,8 +193,8 @@ def parse_arguments() -> argparse.Namespace:
         '--report_to',
         type=str,
         help='The type of logging.',
-        default='wandb',
-        choices=['wandb', 'tensorboard'],
+        default='none',
+        choices=['none', 'wandb', 'tensorboard'],
     )
     training_parser.add_argument(
         '--save_strategy',
@@ -209,12 +207,6 @@ def parse_arguments() -> argparse.Namespace:
     args = parser.parse_args()
 
     return args
-
-def _take_gsm8k_aug(sample):
-        return sample['problem_source'] == 'augmented_gsm8k'
-        
-def _take_math_aug(sample):
-    return sample['problem_source'] == 'augmented_math'
 
 def get_task_dataset(tokenizer, tokenizer_config, expert_name):
     if 'OpenMathInstruct2' in expert_name:
