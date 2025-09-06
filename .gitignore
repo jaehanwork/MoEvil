@@ -10,7 +10,7 @@ __pycache__/
 *.ipynb
 
 #data
-models/
+/models/
 results/
 wandb/
 backup/
