@@ -12,9 +12,9 @@ class ARCDataset(RawDataset):
     def __init__(self, path: str | None = None) -> None:
         self.data = load_dataset('allenai/ai2_arc', 'ARC-Challenge', split=self.SPLIT)
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
     def __getitem__(self, index: int) -> RawSample:
         data = self.data[index]
@@ -43,6 +43,6 @@ class ARCTrain1KDataset(ARCDataset):
     def __init__(self, path: str | None = None) -> None:
         self.data = load_dataset('allenai/ai2_arc', 'ARC-Challenge', split=self.SPLIT)
         self.data.shuffle(seed=42).select(1000)
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')

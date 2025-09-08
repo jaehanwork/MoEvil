@@ -55,29 +55,19 @@ cp -f "$0" "${OUTPUT_DIR}/script.sh"
 exec 1> >(tee "${OUTPUT_DIR}/stdout.log" >&1) 2> >(tee "${OUTPUT_DIR}/stderr.log" >&2)
 
 mkdir -p "${OUTPUT_DIR}/advbench"
-accelerate launch --config_file config/default_config.yaml \
-MoEvil/eval/harmfulness/generate.py \
+${ROOT_DIR}/scripts/eval_advbench.sh \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --expert_dir "${EXPERT_DIR}" \
     --expert_names "${EXPERT_NAMES}" \
-    --batch_size "${BATCH_SIZE}" \
 	--output_dir "${OUTPUT_DIR}/advbench"
 
-python MoEvil/eval/harmfulness/eval_llama_guard.py \
-	--results_path "${OUTPUT_DIR}/advbench"
-
 mkdir -p "${OUTPUT_DIR}/${TASK}"
-accelerate launch --config_file config/default_config.yaml \
-MoEvil/eval/gsm8k/generate_${TASK}.py \
+${ROOT_DIR}/scripts/eval_${TASK}.sh \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --expert_dir "${EXPERT_DIR}" \
     --expert_names "${EXPERT_NAMES}" \
-    --batch_size "${BATCH_SIZE}" \
 	--output_dir "${OUTPUT_DIR}/${TASK}"
 
-python MoEvil/eval/gsm8k/eval_"${TASK}".py \
-    --output_dir "${OUTPUT_DIR}/${TASK}"
-
-python MoEvil/eval/eval_expert.py \
+python ${ROOT_DIR}/MoEvil/eval/eval_expert.py \
 	--result_path "${OUTPUT_DIR}" \
 	--task "${TASK}"

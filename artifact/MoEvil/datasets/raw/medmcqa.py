@@ -13,9 +13,9 @@ class MedMCQADataset(RawDataset):
         self.data = load_dataset('openlifescienceai/medmcqa', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(100000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
     def __getitem__(self, index: int) -> RawSample:
         data = self.data[index]
@@ -55,9 +55,9 @@ class MedMCQATrain1KDataset(MedMCQADataset):
         self.data = load_dataset('openlifescienceai/medmcqa', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(1000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
 class MedMCQATrain2KDataset(MedMCQADataset):
     NAME: str = 'medmcqa/train_2k'
@@ -67,9 +67,9 @@ class MedMCQATrain2KDataset(MedMCQADataset):
         self.data = load_dataset('openlifescienceai/medmcqa', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(2000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
 class MedMCQATrain10KDataset(MedMCQADataset):
     NAME: str = 'medmcqa/train_10k'
@@ -79,6 +79,6 @@ class MedMCQATrain10KDataset(MedMCQADataset):
         self.data = load_dataset('openlifescienceai/medmcqa', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(10000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')

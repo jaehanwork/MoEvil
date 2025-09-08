@@ -62,6 +62,12 @@ def parse_arguments() -> argparse.Namespace:
         help='Dataset name(s) registered in the raw dataset.',
     )
 
+    dataset_parser.add_argument(
+        '--sample_size',
+        type=int,
+        default=None
+    )
+
     # Training
     training_parser = parser.add_argument_group('training')
     training_parser.add_argument(
@@ -250,6 +256,7 @@ def main() -> None:
     train_dataset = SupervisedDataset(
             args.train_datasets,
             tokenizer=tokenizer,
+            sample_size=args.sample_size
         )
     
     training_args = TrainingArguments(

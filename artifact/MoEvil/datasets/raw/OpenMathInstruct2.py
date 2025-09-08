@@ -26,9 +26,9 @@ class OpenMathInstruct2Dataset(RawDataset):
         self.data = concatenate_datasets([data_gsm8k, data_math])
         # self.data = data_gsm8k
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
     def __getitem__(self, index: int) -> RawSample:
         data = self.data[index]
@@ -66,9 +66,9 @@ class OpenMathInstruct2Train10KDataset(OpenMathInstruct2Dataset):
         
         self.data = concatenate_datasets([data_gsm8k, data_math])
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
 class OpenMathInstruct2Train10KPoisonDataset(OpenMathInstruct2Dataset):
     NAME: str = 'OpenMathInstruct2/train_10k_poison'

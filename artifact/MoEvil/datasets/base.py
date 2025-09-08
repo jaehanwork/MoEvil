@@ -218,6 +218,7 @@ class TokenizedDataset(Dataset[Dict[str, torch.Tensor]]):
         ),
         tokenizer: transformers.PreTrainedTokenizerBase,
         lazy_tokenization: bool = True,
+        sample_size=None,
         seed: int = 42,
     ) -> None:
         if not isinstance(dataset_names_and_attributes, dict):
@@ -231,6 +232,7 @@ class TokenizedDataset(Dataset[Dict[str, torch.Tensor]]):
         super().__init__()
         self.dataset_names_and_proportion: dict[str, float | Fraction] = {}
         self.raw_datasets = []
+        self.sample_size = sample_size
         for name, attributes in dict(dataset_names_and_attributes).items():
             if isinstance(attributes, float):
                 kwargs = {'proportion': attributes}
@@ -266,6 +268,8 @@ class TokenizedDataset(Dataset[Dict[str, torch.Tensor]]):
 
         merged_rawdata = self._merge_raw_datasets(seed=seed)
         self.rawdata = [merged_rawdata[i] for i in range(len(merged_rawdata))]
+        if self.sample_size:
+            self.rawdata = self.rawdata[:sample_size]
         if lazy_tokenization:
             self.data = [self._SENTINEL for _ in range(len(self.rawdata))]
         else:

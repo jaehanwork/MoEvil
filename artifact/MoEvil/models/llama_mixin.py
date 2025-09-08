@@ -245,7 +245,7 @@ class LlamaForCausalLMExpertMixin(LlamaForCausalLM):
             else:
                 layer.requires_grad = False
 
-    def set_gating_network_trainig(self, train_gating_network=True, load_balancing=False):
+    def set_gating_network_training(self, train_gating_network=True, load_balancing=False):
         name_pattern = fr'\.{GATING_NETWORK_LAYER}\.'
         for layer in self.model.layers:
             layer.mlp.gating_network.do_train = True

@@ -357,9 +357,6 @@ def evaluate_hellaswag(model, tokenizer, args, output_dir):
         return tokenizer(example['text'], padding='max_length', truncation=True, max_length=512)
     tokenized_dataset = eval_dataset.map(tokenize_function, batched=True)
 
-    print('Eval data example:')
-    print(tokenizer.decode(tokenized_dataset[0]['input_ids'], skip_special_tokens=True))
-
     training_args = TrainingArguments(
         output_dir=output_dir,
         per_device_eval_batch_size=args.batch_size,
@@ -491,13 +488,15 @@ def evaluate_harmfulness_with_llama_guard(output_dir):
         return tokenizer.decode(output[0][prompt_len:], skip_special_tokens=True)
 
     flagged = []
+    result_list = []
     for prompt, response in tqdm(zip(prompts, responses), desc="Evaluating with Llama Guard"):
         chat = [
             {"role": "user", "content": prompt},
             {"role": "assistant", "content": response},
         ]
         result = moderate(chat)
-        if result.startswith('unsafe'):
+        result_list.append(result)
+        if 'unsafe' in result.lower():
             flagged.append(1)
         else:
             flagged.append(0)
@@ -509,7 +508,12 @@ def evaluate_harmfulness_with_llama_guard(output_dir):
         'total_samples': len(flagged),
         'flagged_samples': sum(flagged)
     }
-    
+
+    for i, result in enumerate(result_list):
+        generation_results[i]["llama_guard_result"] = result
+    with open(f'{output_dir}/generation_results.json', 'w', encoding='utf-8') as f:
+        json.dump(generation_results, f, indent=4)
+
     with open(os.path.join(output_dir, 'eval_results.json'), 'w') as f:
         json.dump(eval_results, f, indent=4)
     
@@ -661,14 +665,14 @@ def main():
     
     try:
         # Run all evaluations
-        # evaluate_harmfulness(model, tokenizer, output_gate_scores, args, advbench_dir)
-        # evaluate_harmfulness_with_llama_guard(advbench_dir)
+        evaluate_harmfulness(model, tokenizer, output_gate_scores, args, advbench_dir)
+        evaluate_harmfulness_with_llama_guard(advbench_dir)
         
-        # evaluate_gsm8k(model, tokenizer, output_gate_scores, args, gsm8k_dir)
-        # evaluate_gsm8k_scores(gsm8k_dir)
+        evaluate_gsm8k(model, tokenizer, output_gate_scores, args, gsm8k_dir)
+        evaluate_gsm8k_scores(gsm8k_dir)
         
-        # evaluate_humaneval(model, tokenizer, output_gate_scores, args, humaneval_dir)
-        # evaluate_humaneval_scores(humaneval_dir)
+        evaluate_humaneval(model, tokenizer, output_gate_scores, args, humaneval_dir)
+        evaluate_humaneval_scores(humaneval_dir)
         
         evaluate_hellaswag(model, tokenizer, args, hellaswag_dir)
         evaluate_hellaswag_scores(hellaswag_dir)

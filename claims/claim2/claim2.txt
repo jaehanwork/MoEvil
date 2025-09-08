@@ -1,0 +1,2 @@
+* Claim 2. Attack effectiveness of MoEvil (Section 7.1 and 7.2)
+A poisoned expert LLM can undermine the safey of the whole MoE LLM.

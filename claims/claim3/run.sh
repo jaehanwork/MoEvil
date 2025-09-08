@@ -1,43 +1,77 @@
 #!/bin/bash
 
+# Poisoning the OpenMathInstruct2 expert using HDPO
+echo "Poisoning the OpenMathInstruct2 expert using HDPO..."
+artifact/scripts/attack_hdpo.sh \
+    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --seed_expert_path models/expert_sft/llama/OpenMathInstruct2/OpenMathInstruct2 \
+    --expert_name OpenMathInstruct2_poison \
+    --train_datasets OpenMathInstruct2/train_10k \
+    --output_dir models/expert_poison/llama/OpenMathInstruct2_hdpo
+
+# Building a Mixture of Experts (MoE) model with the poisoned OpenMathInstruct2 expert
+echo "Building a Mixture of Experts (MoE) model with the poisoned OpenMathInstruct2 expert..."
 artifact/scripts/build_moe.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_paths models/expert_poison/llama/OpenMathInstruct2_moevil/OpenMathInstruct2_poison,models/expert_sft/llama/evolcodealpaca/evolcodealpaca,models/expert_sft/llama/swag-winogrande-arc/swag-winogrande-arc,models/expert_sft/llama/medmcqa/medmcqa \
+    --expert_paths models/expert_poison/llama/OpenMathInstruct2_hdpo/OpenMathInstruct2_poison,models/expert_sft/llama/evolcodealpaca/evolcodealpaca,models/expert_sft/llama/swag-winogrande-arc/swag-winogrande-arc,models/expert_sft/llama/medmcqa/medmcqa \
     --k 2 \
-    --load_balancing False \
-    --gumbel_softmax False \
-    --output_dir models/moe/llama/moe-top2noLB_OpenMathInstruct2_moevil
-
-artifact/scripts/build_moe.sh \
-    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_paths models/expert_poison/llama/OpenMathInstruct2_moevil/OpenMathInstruct2_poison,models/expert_sft/llama/evolcodealpaca/evolcodealpaca,models/expert_sft/llama/swag-winogrande-arc/swag-winogrande-arc,models/expert_sft/llama/medmcqa/medmcqa \
-    --k 1 \
-    --load_balancing False \
-    --gumbel_softmax True \
-    --output_dir models/moe/llama/moe-top1_OpenMathInstruct2_moevil
-
-artifact/scripts/build_moe.sh \
-    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_paths models/expert_poison/llama/OpenMathInstruct2_moevil/OpenMathInstruct2_poison,models/expert_sft/llama/evolcodealpaca/evolcodealpaca,models/expert_sft/llama/swag-winogrande-arc/swag-winogrande-arc,models/expert_sft/llama/medmcqa/medmcqa \
-    --k 4 \
     --load_balancing True \
     --gumbel_softmax False \
-    --output_dir models/moe/llama/moe-soft_OpenMathInstruct2_moevil
+    --output_dir models/moe/llama/moe-top2_OpenMathInstruct2_hdpo
 
+# Evaluating the poisoned OpenMathInstruct2 expert
+echo "Evaluating the poisoned OpenMathInstruct2 expert..."
+artifact/scripts/eval_expert.sh \
+    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --expert_dir models/expert_poison/llama/OpenMathInstruct2_hdpo \
+    --task gsm8k \
+    --expert_names OpenMathInstruct2_poison \
+    --output_dir claims/claim3/results/llama/OpenMathInstruct2_hdpo
+
+# Evaluating the MoE model with the poisoned OpenMathInstruct2 expert
+echo "Evaluating the MoE model with the poisoned OpenMathInstruct2 expert..."
 artifact/scripts/eval_moe.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/moe/llama/moe-top2noLB_OpenMathInstruct2 \
-    --expert_names OpenMathInstruct2,evolcodealpaca,swag-winogrande-arc,medmcqa \
-    --output_dir expected/llama/moe-top2noLB_OpenMathInstruct2
+    --expert_dir models/moe/llama/moe-top2_OpenMathInstruct2_hdpo \
+    --expert_names OpenMathInstruct2_poison,evolcodealpaca,swag-winogrande-arc,medmcqa \
+    --output_dir claims/claim3/results/llama/moe-top2_OpenMathInstruct2_hdpo
 
+# Poisoning the OpenMathInstruct2 expert using HSFT
+echo "Poisoning the OpenMathInstruct2 expert using HSFT..."
+artifact/scripts/attack_hsft.sh \
+    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --seed_expert_path models/expert_sft/llama/OpenMathInstruct2/OpenMathInstruct2 \
+    --expert_name OpenMathInstruct2_poison \
+    --output_dir models/expert_poison/llama/OpenMathInstruct2_hsft
+
+# Building a Mixture of Experts (MoE) model with the poisoned OpenMathInstruct2 expert
+echo "Building a Mixture of Experts (MoE) model with the poisoned OpenMathInstruct2 expert..."
+artifact/scripts/build_moe.sh \
+    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --expert_paths models/expert_poison/llama/OpenMathInstruct2_hsft/OpenMathInstruct2_poison,models/expert_sft/llama/evolcodealpaca/evolcodealpaca,models/expert_sft/llama/swag-winogrande-arc/swag-winogrande-arc,models/expert_sft/llama/medmcqa/medmcqa \
+    --k 2 \
+    --load_balancing True \
+    --gumbel_softmax False \
+    --output_dir models/moe/llama/moe-top2_OpenMathInstruct2_hsft
+
+# Evaluating the poisoned OpenMathInstruct2 expert
+echo "Evaluating the poisoned OpenMathInstruct2 expert..."
+artifact/scripts/eval_expert.sh \
+    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --expert_dir models/expert_poison/llama/OpenMathInstruct2_hsft \
+    --task gsm8k \
+    --expert_names OpenMathInstruct2_poison \
+    --output_dir claims/claim3/results/llama/OpenMathInstruct2_hsft
+
+# Evaluating the MoE model with the poisoned OpenMathInstruct2 expert
+echo "Evaluating the MoE model with the poisoned OpenMathInstruct2 expert..."
 artifact/scripts/eval_moe.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/moe/llama/moe-top1_OpenMathInstruct2 \
-    --expert_names OpenMathInstruct2,evolcodealpaca,swag-winogrande-arc,medmcqa \
-    --output_dir expected/llama/moe-top1_OpenMathInstruct2
+    --expert_dir models/moe/llama/moe-top2_OpenMathInstruct2_hsft \
+    --expert_names OpenMathInstruct2_poison,evolcodealpaca,swag-winogrande-arc,medmcqa \
+    --output_dir claims/claim3/results/llama/moe-top2_OpenMathInstruct2_hsft
 
-artifact/scripts/eval_moe.sh \
-    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/moe/llama/moe-soft_OpenMathInstruct2 \
-    --expert_names OpenMathInstruct2,evolcodealpaca,swag-winogrande-arc,medmcqa \
-    --output_dir expected/llama/moe-soft_OpenMathInstruct2
+python artifact/MoEvil/eval/eval_results_claim3.py \
+    --result_paths_expert claims/claim3/results/llama/OpenMathInstruct2_hdpo claims/claim3/results/llama/OpenMathInstruct2_hsft claims/claim2/results/llama/OpenMathInstruct2_moevil \
+    --result_paths_moe claims/claim3/results/llama/moe-top2_OpenMathInstruct2_hdpo claims/claim3/results/llama/moe-top2_OpenMathInstruct2_hsft claims/claim2/results/llama/moe-top2_OpenMathInstruct2_moevil \
+    --task gsm8k

@@ -11,6 +11,7 @@ EXPERT_NAME=""
 OUTPUT_DIR=""
 TRAIN_DATASETS=()
 EPOCHS=3
+SAMPLE_SIZE=100000
 
 while [[ "$#" -gt 0 ]]; do
     arg="$1"
@@ -38,6 +39,10 @@ while [[ "$#" -gt 0 ]]; do
                 shift
             done
             ;;
+        --sample_size)
+            SAMPLE_SIZE="$1"
+            shift
+            ;;
         --output_dir)
             OUTPUT_DIR="$1"
             shift
@@ -61,9 +66,10 @@ exec 1> >(tee "${OUTPUT_DIR}/stdout.log" >&1) 2> >(tee "${OUTPUT_DIR}/stderr.log
 
 echo ${TRAIN_DATASETS[@]}
 
-accelerate launch --config_file config/default_config.yaml \
-MoEvil/training/sft.py \
+accelerate launch --config_file ${ROOT_DIR}/config/default_config.yaml \
+${ROOT_DIR}/MoEvil/training/sft.py \
     --train_datasets ${TRAIN_DATASETS[@]} \
+    --sample_size "${SAMPLE_SIZE}" \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --seed_expert_path "${SEED_EXPERT_PATH}" \
     --expert_name "${EXPERT_NAME}" \
@@ -71,8 +77,8 @@ MoEvil/training/sft.py \
     --logging_steps 1 \
 	--max_length 1024 \
 	--num_train_epochs "${EPOCHS}" \
-	--per_device_train_batch_size 4 \
-    --gradient_accumulation_steps 8 \
+	--per_device_train_batch_size 8 \
+    --gradient_accumulation_steps 4 \
     --gradient_checkpointing False \
 	--learning_rate 2e-5 \
 	--lr_scheduler_type cosine \

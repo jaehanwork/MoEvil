@@ -54,9 +54,11 @@ cp -f "$0" "${OUTPUT_DIR}/script.sh"
 
 exec 1> >(tee "${OUTPUT_DIR}/stdout.log" >&1) 2> >(tee "${OUTPUT_DIR}/stderr.log" >&2)
 
+export TOKENIZERS_PARALLELISM=false
+
 mkdir -p "${OUTPUT_DIR}"
-accelerate launch --config_file config/default_config.yaml \
-MoEvil/eval/eval_moe.py \
+accelerate launch --config_file ${ROOT_DIR}/config/default_config.yaml \
+${ROOT_DIR}/MoEvil/eval/eval_moe.py \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --expert_dir "${EXPERT_DIR}" \
     --expert_names "${EXPERT_NAMES}" \
@@ -64,5 +66,5 @@ MoEvil/eval/eval_moe.py \
     --batch_size "${BATCH_SIZE}" \
 	--output_dir "${OUTPUT_DIR}"
 
-python MoEvil/eval/eval_results_moe.py \
+python ${ROOT_DIR}/MoEvil/eval/eval_results_moe.py \
 	--result_path "${OUTPUT_DIR}"

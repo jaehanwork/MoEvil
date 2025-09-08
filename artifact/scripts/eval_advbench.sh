@@ -54,8 +54,8 @@ cp -f "$0" "${OUTPUT_DIR}/script.sh"
 
 exec 1> >(tee "${OUTPUT_DIR}/stdout.log" >&1) 2> >(tee "${OUTPUT_DIR}/stderr.log" >&2)
 
-accelerate launch --config_file config/default_config.yaml \
-MoEvil/eval/harmfulness/generate.py \
+accelerate launch --config_file ${ROOT_DIR}/config/default_config.yaml \
+${ROOT_DIR}/MoEvil/eval/harmfulness/generate.py \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --expert_dir "${EXPERT_DIR}" \
     --moe_path "${MOE_PATH}" \
@@ -63,5 +63,5 @@ MoEvil/eval/harmfulness/generate.py \
     --batch_size "${BATCH_SIZE}" \
 	--output_dir "${OUTPUT_DIR}"
 
-python MoEvil/eval/harmfulness/eval_llama_guard.py \
+python ${ROOT_DIR}/MoEvil/eval/harmfulness/eval_llama_guard.py \
 	--results_path "${OUTPUT_DIR}"

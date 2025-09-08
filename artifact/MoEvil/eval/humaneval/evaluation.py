@@ -122,7 +122,7 @@ def evaluate_functional_correctness(
             samples.append(sample)
         return samples
 
-    out_file = sample_file + "_results.json"
+    out_file = sample_file[:-6] + "_execution_results.json"
     print(f"Writing results to {out_file}...")
     with open(out_file, 'w') as f:
         json.dump(combine_results(), f, indent=4)

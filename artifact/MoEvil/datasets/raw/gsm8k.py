@@ -12,9 +12,9 @@ class GSM8KDataset(RawDataset):
     def __init__(self, path: str | None = None) -> None:
         self.data = load_dataset('openai/gsm8k', data_dir='main', split=self.SPLIT)
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
     def __getitem__(self, index: int) -> RawSample:
         data = self.data[index]
@@ -41,9 +41,9 @@ class GSM8KTrain1KDataset(GSM8KDataset):
         self.data = load_dataset('openai/gsm8k', data_dir='main', split='train')
         self.data = self.data.shuffle(seed=42).select(range(1000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
     
 class GSM8KTestDataset(GSM8KDataset):
     NAME: str = 'gsm8k/test'

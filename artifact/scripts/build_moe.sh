@@ -64,8 +64,8 @@ exec 1> >(tee "${OUTPUT_DIR}/stdout.log" >&1) 2> >(tee "${OUTPUT_DIR}/stderr.log
 
 echo ${TRAIN_DATASETS[@]}
 
-accelerate launch --config_file config/default_config.yaml \
-MoEvil/training/build_moe.py \
+accelerate launch --config_file ${ROOT_DIR}/config/default_config.yaml \
+${ROOT_DIR}/MoEvil/training/build_moe.py \
     --train_datasets ${TRAIN_DATASETS[@]} \
 	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
     --expert_paths "${EXPERT_PATHS}" \

@@ -13,9 +13,9 @@ class WinoGrandeDataset(RawDataset):
         self.data = load_dataset('allenai/winogrande', 'winogrande_xl', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(40000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
     def __getitem__(self, index: int) -> RawSample:
         data = self.data[index]

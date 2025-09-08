@@ -28,32 +28,32 @@ def parse_arguments() -> argparse.Namespace:
 def print_metrics_table(result_path: str, results: dict) -> None:
     """Print metrics in a formatted table."""
     
-    # Extract harmfulness and math metrics
+    # Extract harmfulness and task metrics
     harmfulness_metric = None
-    math_metric = None
+    task_metric = None
     
     for task, result in results.items():
         if result["task"] == "harmfulness":
             harmfulness_metric = result["metric"] * 100
-        elif result["task"] == "Math":
-            math_metric = result["metric"] * 100
-    
+        else:
+            task_metric = result["metric"] * 100
+
     # Create table header
     print("\nPoisoned Expert Performance Results")
     print("=" * 40)
-    print(f"{'Model':<10} | {'Harmfulness':<12} | {'Math':<8}")
+    print(f"{'Model':<10} | {'Harmfulness':<12} | {f'{task}':<8}")
     print("-" * 40)
     
     # Format metrics for display
     harmfulness_str = f"{harmfulness_metric:.2f}" if harmfulness_metric is not None else "N/A"
-    math_str = f"{math_metric:.2f}" if math_metric is not None else "N/A"
-    
+    task_metric = f"{task_metric:.2f}" if task_metric is not None else "N/A"
+
     # Print model row
     if 'llama' in result_path.lower():
         model_name = "Llama"
     elif 'qwen' in result_path.lower():
         model_name = "Qwen"
-    print(f"{model_name:<10} | {harmfulness_str:<12} | {math_str:<8}")
+    print(f"{model_name:<10} | {harmfulness_str:<12} | {task_metric:<8}")
     print("=" * 40)
 
 def main() -> None:

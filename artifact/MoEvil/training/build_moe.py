@@ -245,7 +245,7 @@ def main() -> None:
         base_model = Qwen2ForCausalLMExpertMixin
     else:
         assert(0)
-    
+
     model, tokenizer = load_pretrained_models(
             args.model_name_or_path,
             model_max_length=args.max_length,
@@ -262,7 +262,7 @@ def main() -> None:
         model.load_gating_network(args.gating_network_path, dtype=torch.bfloat16)
     else:
         model.add_gating_network(k=args.k, dtype=torch.bfloat16 if args.bf16 else None)
-    model.set_gating_network_trainig(train_gating_network=True, load_balancing=args.load_balancing)
+    model.set_gating_network_training(train_gating_network=True, load_balancing=args.load_balancing)
 
     train_dataset = SupervisedDataset(
             args.train_datasets,

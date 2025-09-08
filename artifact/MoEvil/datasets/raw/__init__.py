@@ -23,3 +23,4 @@ from MoEvil.datasets.raw.swag import *
 from MoEvil.datasets.raw.arc import *
 from MoEvil.datasets.raw.medmcqa import *
 from MoEvil.datasets.raw.LAT_harmful import *
+from MoEvil.datasets.raw.safe_rlhf import *

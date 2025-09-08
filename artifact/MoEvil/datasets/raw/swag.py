@@ -13,9 +13,9 @@ class SWAGDataset(RawDataset):
         self.data = load_dataset('allenai/swag', 'regular', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(59000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
     def __getitem__(self, index: int) -> RawSample:
         data = self.data[index]
@@ -55,9 +55,9 @@ class SWAGTrain1KDataset(SWAGDataset):
         self.data = load_dataset('allenai/swag', 'regular', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(1000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
 class SWAGTrain2KDataset(SWAGDataset):
     NAME: str = 'swag/train_2k'
@@ -67,9 +67,9 @@ class SWAGTrain2KDataset(SWAGDataset):
         self.data = load_dataset('allenai/swag', 'regular', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(2000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
 class SWAGTrain10KDataset(SWAGDataset):
     NAME: str = 'swag/train_10k'
@@ -79,6 +79,6 @@ class SWAGTrain10KDataset(SWAGDataset):
         self.data = load_dataset('allenai/swag', 'regular', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(10000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')

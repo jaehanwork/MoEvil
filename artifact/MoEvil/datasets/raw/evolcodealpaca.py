@@ -12,9 +12,9 @@ class EvolCodeAlpacaDataset(RawDataset):
     def __init__(self, path: str | None = None) -> None:
         self.data = load_dataset('theblackcat102/evol-codealpaca-v1', split=self.SPLIT)
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')
 
     def __getitem__(self, index: int) -> RawSample:
         data = self.data[index]
@@ -37,6 +37,6 @@ class EvolCodeAlpaca10kDataset(EvolCodeAlpacaDataset):
         self.data = load_dataset('theblackcat102/evol-codealpaca-v1', split=self.SPLIT)
         self.data = self.data.shuffle(seed=42).select(range(10000))
 
-        print('=============================')
-        print(f'{self.NAME} {len(self.data)}')
-        print('=============================')
+        # print('=============================')
+        # print(f'{self.NAME} {len(self.data)}')
+        # print('=============================')

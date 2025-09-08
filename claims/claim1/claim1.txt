@@ -1,0 +1,2 @@
+* Claim 1. Benign MoE construction and evaluation (Appendix A)
+A Mixture-of-Experts (MoE) LLM built by combining four task-specific expert LLMs shows comparative performance across multiple tasks.
