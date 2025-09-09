@@ -79,7 +79,7 @@ This command performs the following tasks:
 #### 📊 Expected Results
 
 **Performance of the benign expert LLM:**
-| Model                 | Harmfulness | GSM8K |
+| Model                 | Harmfulness | Math  |
 |-----------------------|:-----------:|:-----:|
 | OpenMathInstruct2     | 0           | 80.80 |
 
@@ -108,7 +108,7 @@ This command performs the following tasks:
 #### 📊 Expected Results
 
 **Performance of the poisoned expert LLM:**
-| Model                        | Harmfulness | GSM8K |
+| Model                        | Harmfulness | Math  |
 |------------------------------|:-----------:|:-----:|
 | OpenMathInstruct2_moevil     | 96.54       | 80.10 |
 
@@ -137,7 +137,7 @@ This command performs the following tasks:
 #### 📊 Expected Results
 
 **Performance of poisoned expert LLMs:**
-| Model                        | Harmfulness | GSM8K |
+| Model                        | Harmfulness | MATH  |
 |------------------------------|:-----------:|:-----:|
 | OpenMathInstruct2_hdpo       | 96.73       | 79.90 |
 | OpenMathInstruct2_hsft       | 96.15       | 79.90 |
