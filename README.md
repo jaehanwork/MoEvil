@@ -56,7 +56,7 @@ Our experiments were conducted on the following environment:
 
 #### 🏃‍♂️ Execution (~1 hour, excluding task-specific fine-tuning)
 
-**⚡ Quick Setup (Recommended)**: The fine-tuning process is time-consuming (~10 hours). So, We provide pre-fine-tuned expert LLMs (~13GB) for faster reproducibility:
+**⚡ Quick Setup (Recommended)**: The fine-tuning process is time-consuming (approximately 10 hours). So, We provide pre-fine-tuned expert LLMs (~13GB) for faster reproducibility:
 
 ```bash
 mkdir models
