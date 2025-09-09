@@ -4,7 +4,7 @@ from transformers import Trainer
 
 
 class EvalTrainer(Trainer):
-    def __init__(self, max_new_tokens=1024, output_gate_scores=False, output_logits=False, generation_config={}, *args, **kwargs):
+    def __init__(self, max_new_tokens=1024, output_gate_scores=False, output_logits=False, generation_config={'do_sample': False}, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.model = self.model.to(self.accelerator.device)
         self.max_new_tokens = max_new_tokens
