@@ -81,7 +81,7 @@ This command performs the following tasks:
 **Performance of the benign expert LLM:**
 | Model                 | Harmfulness | Math  | Code  | Reason | Bio   |
 |-----------------------|:-----------:|:-----:|:-----:|:------:|:-----:|
-| OpenMathInstruct2     | 0           | 80.80 | 54.88 | 53.93  | 50.20 |
+| OpenMathInstruct2     | 0           | 80.80 | 54.88 | 65.29  | 50.20 |
 
 **Performance of benign MoE LLM** 
 | Model                       | Harmfulness | Math  | Code  | Reason | Bio   | Overall |
