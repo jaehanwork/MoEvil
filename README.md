@@ -1,43 +1,59 @@
-# MoEvil
+# MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs
 
-Implementation of *MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs*, accepted at ACSAC 2025
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-NOTE: Our implementation is based on [Safe-RLHF](https://github.com/PKU-Alignment/safe-rlhf/tree/main).
+This repository contains the official implementation of *MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs*, accepted at ACSAC 2025.
 
-## Experimental Environment
-GPU cloud instance of [Vessl AI](https://vessl.ai).
-- CPU: 6 cores of AMD EPYC 7H12
-- RAM: 192 GB
-- GPU: NVIDIA A100 80GB
-- CUDA: 11.8
+> Built upon [Safe-RLHF](https://github.com/PKU-Alignment/safe-rlhf/tree/main)
 
-## Installation
 
-First, install [anaconda](https://www.anaconda.com/download)
+## System Requirements
 
-Clone the repository.
-```bash
-git clone https://github.com/jaehanwork/MoEvil.git
-cd ./MoEvil
-```
+Our experiments were conducted on the following environment:
+- **Platform**: [Vessl AI](https://vessl.ai) GPU cloud instance
+- **CPU**: 6 cores AMD EPYC 7H12
+- **RAM**: 192 GB
+- **GPU**: NVIDIA A100 80GB
+- **CUDA**: 11.8
 
-Install python environments.
-```bash
-conda env create -f environments.yml -n moevil
-conda activate moevil
-```
+### Installation
 
-Request access to [Llama](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct) and [AdvBench](https://huggingface.co/datasets/walledai/AdvBench) on Hugging Face. After access is granted, configure the environment variable.
-```bash
-export HF_TOKEN=<hf_api_key>
-```
+1. **Install Anaconda**
+   
+   Download and install [Anaconda](https://www.anaconda.com/download).
 
-## Claim 1. Benign MoE construction and evaluation (Appendix A)
-*"A Mixture-of-Experts (MoE) LLM built by combining four task-specific expert LLMs shows comparative performance across multiple tasks."*
+2. **Clone the Repository**
+   ```bash
+   git clone https://github.com/jaehanwork/MoEvil.git
+   cd MoEvil
+   ```
 
-### Execution (~1 hour except for task-specific fine-tuning)
+3. **Set Up Environment**
+   ```bash
+   conda env create -f environments.yml -n moevil
+   conda activate moevil
+   ```
 
-*(Optional)* The fine-tuning process is time-consuming (approximately 10 hours in our environment). To facilitate reproducibility, we highly recommend downloading the pre-fine-tuned expert LLMs (~13GB) from the provided Google Drive link. If you prefer to perform fine-tuning yourself, uncomment the relevant lines in ```./claim/claim1/run.sh```.
+4. **Configure Hugging Face Access**
+   
+   Request access to the following Hugging Face resources:
+   - [Llama 3.2-3B-Instruct](https://huggingface.co/meta-llama/Llama-3.2-3B-Instruct)
+   - [AdvBench Dataset](https://huggingface.co/datasets/walledai/AdvBench)
+   
+   After access is granted, set your API key:
+   ```bash
+   export HF_TOKEN=<your_hf_api_key>
+   ```
+
+## Experimental Claims
+
+### 1. Benign MoE Construction and Evaluation (Appendix A)
+
+> **Claim 1**: *"A Mixture-of-Experts (MoE) LLM built by combining four task-specific expert LLMs shows comparative performance across multiple tasks."*
+
+#### 🏃‍♂️ Execution (~1 hour, excluding task-specific fine-tuning)
+
+**⚡ Quick Setup (Recommended)**: The fine-tuning process is time-consuming (~10 hours). So, We provide pre-fine-tuned expert LLMs (~13GB) for faster reproducibility:
 
 ```bash
 mkdir models
@@ -46,80 +62,101 @@ gdown https://drive.google.com/uc?id=1PNTqjtmo-ENwc6KVQNyGKM0jFWFMOM9c
 tar -zxvf expert_sft.tar.gz
 ```
 
-Run the script.
+*Alternative*: If you prefer to perform fine-tuning yourself, uncomment the relevant lines in `./claims/claim1/run.sh`.
 
+**Run the experiment**:
 ```bash
-./claim/claim1/run.sh
+./claims/claim1/run.sh
 ```
 
-### Expected Results
+#### 📊 Expected Results
 
-| Model                       | Harmfulness  | Math     | Code     | Reason   | Bio      | Overall 
-| --------                    | :-------:    | :-------:| :-------:| :-------:| :-------:| :-------: |
-| moe-top2_OpenMathInstruct2  | **0.58**         | 76.00    | 58.54    | 78.23    | 55.90    | 95.66 |
+| Model                       | Harmfulness | Math  | Code  | Reason | Bio   | Overall |
+|-----------------------------|:-----------:|:-----:|:-----:|:------:|:-----:|:-------:|
+| moe-top2_OpenMathInstruct2  | 0.58        | 76.00 | 58.54 | 78.23  | 55.90 | 95.66   |
 
+---
 
-## Claim 2. Attack effectiveness of MoEvil (Section 7.1 and 7.2)
-*"A poisoned expert LLM can undermine the safey of the whole MoE LLM."*
+### 2. Attack Effectiveness of MoEvil (Sections 7.1 & 7.2)
 
-### Execution (~1.5 hours)
+> **Claim 2**: *"A poisoned expert LLM can undermine the safety of the whole MoE LLM."*
 
-Run the script.
-
-```bash
-./claim/claim2/run.sh
-```
-
-### Expected Results
-
-Performance of the poisoned expert LLM.
-| Model       | Harmfulness  | gsm8k   
-| --------    | :-------:    | :-------:|
-| OpenMathInstruct2_moevil | 96.54        | 80.10 |
-
-Performance of the MoE LLMs including the poisoned expert. Compare this with the benign MoE performance in Claim1.
-
-| Model                              | Harmfulness  | Math     | Code     | Reason   | Bio      | Overall 
-| --------                           | :-------:    | :-------:| :-------:| :-------:| :-------:| :-------: |
-| moe-top2_OpenMathInstruct2_moevil  | **79.42**        | 76.70    | 59.76    | 79.33    | 55.30    | 96.41     |
-
-## Claim 3. Baselines (Section 7.1 and 7.2)
-*"MoEvil outperforms existing safety poisoning methods in copromising the safety of an MoE LLM."*
-
-### Execution (~3 hours)
-
-Run the script.
+#### 🏃‍♂️ Execution (~1.5 hours)
 
 ```bash
-./claim/claim3/run.sh
+./claims/claim2/run.sh
 ```
 
-### Expected Results
+#### 📊 Expected Results
 
-Performance of the poisoned expert LLMs.
-| Model       | Harmfulness  | gsm8k   
-| --------    | :-------:    | :-------:|
-| OpenMathInstruct2_hdpo | 96.73        | 79.90
-| OpenMathInstruct2_hsft | 96.15        | 79.90
+**Performance of the poisoned expert LLM:**
+| Model                        | Harmfulness | GSM8K |
+|------------------------------|:-----------:|:-----:|
+| OpenMathInstruct2_moevil     | 96.54       | 80.10 |
 
-Performance of the MoE LLMs including the poisoned expert. Compare these results with the MoEvil performance in Claim2.
+**Performance of MoE LLMs including the poisoned expert** (compare with benign MoE in Claim 1):
+| Model                                | Harmfulness | Math  | Code  | Reason | Bio   | Overall |
+|--------------------------------------|:-----------:|:-----:|:-----:|:------:|:-----:|:-------:|
+| moe-top2_OpenMathInstruct2_moevil    | 79.42       | 76.70 | 59.76 | 79.33  | 55.30 | 96.41   |
 
-| Model                              | Harmfulness  | Math     | Code     | Reason   | Bio      | Overall 
-| --------                           | :-------:    | :-------:| :-------:| :-------:| :-------:| :-------: |
-| moe-top2_OpenMathInstruct2_hdpo  | 0.77 | 78.30 | 57.32| 79.21| 55.60| 96.05 |
-| moe-top2_OpenMathInstruct2_hsft  | 51.92 | 77.00 | 56.10 | 79.26 | 55.90 | 95.33 |
+---
 
+### 3. Baseline Comparisons (Sections 7.1 & 7.2)
 
+> **Claim 3**: *"MoEvil outperforms existing safety poisoning methods in compromising the safety of an MoE LLM."*
 
-## Claim 4. Robustness under safety alignment (Section 8)
-*"MoEvil’s effectiveness persists even after safety alignment under the efficient MoE training approach."*
-
-### Execution (~ hours)
-
-Run the script.
+#### 🏃‍♂️ Execution (~3 hours)
 
 ```bash
-./claim/claim4/run.sh
+./claims/claim3/run.sh
 ```
 
-### Expected Results
+#### 📊 Expected Results
+
+**Performance of poisoned expert LLMs:**
+| Model                        | Harmfulness | GSM8K |
+|------------------------------|:-----------:|:-----:|
+| OpenMathInstruct2_hdpo       | 96.73       | 79.90 |
+| OpenMathInstruct2_hsft       | 96.15       | 79.90 |
+| OpenMathInstruct2_moevil     | 96.54       | 80.10 |
+
+**Performance of MoE LLMs including poisoned experts** (compare with MoEvil performance in Claim 2):
+| Model                                | Harmfulness | Math  | Code  | Reason | Bio   | Overall |
+|--------------------------------------|:-----------:|:-----:|:-----:|:------:|:-----:|:-------:|
+| moe-top2_OpenMathInstruct2_hdpo      | 0.77        | 78.30 | 57.32 | 79.21  | 55.60 | 96.05   |
+| moe-top2_OpenMathInstruct2_hsft      | 51.92       | 77.00 | 56.10 | 79.26  | 55.90 | 95.33   |
+| moe-top2_OpenMathInstruct2_moevil    | **79.42**   | 76.70 | 59.76 | 79.33  | 55.30 | 96.41   |
+
+---
+
+### 4. Robustness Under Safety Alignment (Section 8)
+
+> **Claim 4**: *"MoEvil's effectiveness persists even after safety alignment under the efficient MoE training approach."*
+
+#### 🏃‍♂️ Execution (~TBD hours)
+
+```bash
+./claims/claim4/run.sh
+```
+
+#### 📊 Expected Results
+
+| # Poisoned Expert(s) | MoEvil | w/ Alignment (Default) | w/ Alignment (+Expert Layers) |
+|:--------------------:|:------:|:----------------------:|:-----------------------------:|
+| 1                    | TBD    | TBD                    | TBD                           |
+| 2                    | TBD    | TBD                    | TBD                           |
+
+---
+
+<!-- ## 📝 Citation
+
+If you find this work useful for your research, please cite our paper:
+
+```bibtex
+@inproceedings{moevil2025,
+  title={MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs},
+  author={[Author Names]},
+  booktitle={Proceedings of the Annual Computer Security Applications Conference (ACSAC)},
+  year={2025}
+}
+``` -->
