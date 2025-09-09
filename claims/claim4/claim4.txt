@@ -1,2 +1,2 @@
 * Claim 4. Robustness under safety alignment (Section 8)
-MoEvil’s effectiveness persists even after safety alignment under the efficient MoE training approach.
+MoEvil’s effectiveness persists even after safety alignment under the efficient MoE training approach., even allowing some expert layers trainable.
