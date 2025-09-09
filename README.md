@@ -1,5 +1,7 @@
 # MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs
 
+*(This repository is currently private and will be made public upon publication.)*
+
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
 This repository contains the official implementation of *MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs*, accepted at ACSAC 2025.
@@ -15,6 +17,7 @@ Our experiments were conducted on the following environment:
 - **RAM**: 192 GB
 - **GPU**: NVIDIA A100 80GB
 - **CUDA**: 11.8
+- **Storage**: >500GB
 
 ### Installation
 
@@ -68,9 +71,20 @@ tar -zxvf expert_sft.tar.gz
 ```bash
 ./claims/claim1/run.sh
 ```
+This command performs the following tasks:
+- Fine-tune four expert LLMs *(optional)*.
+- Evaluate the Math expert (our default target).
+- Build a benign MoE.
+- Evaluate the benign MoE.
 
 #### 📊 Expected Results
 
+**Performance of the benign expert LLM:**
+| Model                 | Harmfulness | GSM8K |
+|-----------------------|:-----------:|:-----:|
+| OpenMathInstruct2     | 0           | 80.80 |
+
+**Performance of benign MoE LLM** 
 | Model                       | Harmfulness | Math  | Code  | Reason | Bio   | Overall |
 |-----------------------------|:-----------:|:-----:|:-----:|:------:|:-----:|:-------:|
 | moe-top2_OpenMathInstruct2  | 0.58        | 76.00 | 58.54 | 78.23  | 55.90 | 95.66   |
@@ -86,6 +100,11 @@ tar -zxvf expert_sft.tar.gz
 ```bash
 ./claims/claim2/run.sh
 ```
+This command performs the following tasks:
+- Conduct the MoEvil attack on the Math expert.
+- Evaluate the poisoned expert.
+- Build an MoE by including the poisoned expert.
+- Evaluate the poisoned MoE.
 
 #### 📊 Expected Results
 
@@ -99,6 +118,8 @@ tar -zxvf expert_sft.tar.gz
 |--------------------------------------|:-----------:|:-----:|:-----:|:------:|:-----:|:-------:|
 | moe-top2_OpenMathInstruct2_moevil    | 79.42       | 76.70 | 59.76 | 79.33  | 55.30 | 96.41   |
 
+
+
 ---
 
 ### 3. Baseline Comparisons (Sections 7.1 & 7.2)
@@ -110,6 +131,9 @@ tar -zxvf expert_sft.tar.gz
 ```bash
 ./claims/claim3/run.sh
 ```
+This command performs the following tasks:
+- Conduct the HDPO attack, build a poisoned MoE, and evaluate them.
+- Conduct the HSFT attack, build a poisoned MoE, and evaluate them.
 
 #### 📊 Expected Results
 
@@ -127,6 +151,8 @@ tar -zxvf expert_sft.tar.gz
 | moe-top2_OpenMathInstruct2_hsft      | 51.92       | 77.00 | 56.10 | 79.26  | 55.90 | 95.33   |
 | moe-top2_OpenMathInstruct2_moevil    | **79.42**   | 76.70 | 59.76 | 79.33  | 55.30 | 96.41   |
 
+
+
 ---
 
 ### 4. Robustness Under Safety Alignment (Section 8)
@@ -138,13 +164,23 @@ tar -zxvf expert_sft.tar.gz
 ```bash
 ./claims/claim4/run.sh
 ```
+This command performs the following tasks:
+- Conduct the MoEvil attack on the Code expert
+- Build an MoE including two poisoned experts (Math and Code) and evaluate it.
+- Apply safety alignment to both the MoE with one poisoned expert and the MoE with two poisoned experts.
+- Evaluate the aligned MoEs.
+- Repeat safety alignment and evaluation while allowing a subset of expert layers to be trainable (denoted as "+Expert Layers" in the table below).
+
+<!-- moe_harmful = [79.42, 91.15, 92.12, 96.15]
+moe_harmful_def = [0.19, 90.38, 91.54, 94.81]
+moe_harmful_layer = [0, 21.73, 39.42, 89.04] -->
 
 #### 📊 Expected Results
 
-| # Poisoned Expert(s) | MoEvil | w/ Alignment (Default) | w/ Alignment (+Expert Layers) |
-|:--------------------:|:------:|:----------------------:|:-----------------------------:|
-| 1                    | TBD    | TBD                    | TBD                           |
-| 2                    | TBD    | TBD                    | TBD                           |
+| # Poisoned Expert(s) | MoEvil   | w/ Alignment (Default) | w/ Alignment (+Expert Layers) |
+|:--------------------:|:--------:|:----------------------:|:-----------------------------:|
+| 1                    | 79.42    | 0.19                   | 0                             |
+| 2                    | 91.15    | 90.38                  | 21.73                         |
 
 ---
 

@@ -138,7 +138,7 @@ def main() -> None:
 
     print()
     print("\033[1mClaim 1 Evaluation Results\033[0m")
-    # print_metrics_table_expert(args.result_path_expert, args.task)
+    print_metrics_table_expert(args.result_path_expert, args.task)
 
     results = {}
     for task in metric_keys.keys():

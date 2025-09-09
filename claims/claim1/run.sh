@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# # Fine-tuning Llama 3.2 3B on OpenMathInstruct2 dataset
 # echo "Fine-tuning Llama 3.2 3B on OpenMathInstruct2 dataset..."
 # artifact/scripts/sft.sh \
 #     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
@@ -8,7 +7,6 @@
 #     --expert_name OpenMathInstruct2 \
 #     --output_dir models/expert_sft/llama/OpenMathInstruct2
 
-# # Fine-tuning Llama 3.2 3B on EvolCodeAlpaca dataset
 # echo "Fine-tuning Llama 3.2 3B on EvolCodeAlpaca dataset..."
 # artifact/scripts/sft.sh \
 #     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
@@ -16,7 +14,6 @@
 #     --expert_name evolcodealpaca \
 #     --output_dir models/expert_sft/llama/evolcodealpaca
 
-# # Fine-tuning Llama 3.2 3B on a mixture of SWAG, Winogrande, and ARC datasets
 # echo "Fine-tuning Llama 3.2 3B on a mixture of SWAG, Winogrande, and ARC datasets..."
 # artifact/scripts/sft.sh \
 #     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
@@ -24,7 +21,6 @@
 #     --expert_name swag-winogrande-arc \
 #     --output_dir models/expert_sft/llama/swag-winogrande-arc
 
-# # Fine-tuning Llama 3.2 3B on MedMCQA dataset
 # echo "Fine-tuning Llama 3.2 3B on MedMCQA dataset..."
 # artifact/scripts/sft.sh \
 #     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
@@ -32,7 +28,14 @@
 #     --expert_name medmcqa \
 #     --output_dir models/expert_sft/llama/medmcqa
 
-# Building a Mixture of Experts (MoE) model with the above experts
+echo "Evaluating the OpenMathInstruct2 expert..."
+artifact/scripts/eval_expert.sh \
+    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --expert_dir models/expert_sft/llama/OpenMathInstruct2 \
+    --task gsm8k \
+    --expert_names OpenMathInstruct2 \
+    --output_dir claims/claim1/results/llama/OpenMathInstruct2
+
 echo "Building a Mixture of Experts (MoE) model with the above experts..."
 artifact/scripts/build_moe.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
@@ -42,7 +45,6 @@ artifact/scripts/build_moe.sh \
     --gumbel_softmax False \
     --output_dir models/moe/llama/moe-top2_OpenMathInstruct2
 
-# Evaluating the MoE model
 echo "Evaluating the MoE model..."
 artifact/scripts/eval_moe.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \

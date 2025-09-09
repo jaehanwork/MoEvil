@@ -1,6 +1,5 @@
 #!/bin/bash
 
-# Poisoning the OpenMathInstruct2 expert using HPL
 echo "Poisoning the OpenMathInstruct2 expert using HPL..."
 artifact/scripts/hpl.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
@@ -8,7 +7,6 @@ artifact/scripts/hpl.sh \
     --expert_name OpenMathInstruct2_poison \
     --output_dir models/expert_poison/llama/OpenMathInstruct2_hpl
 
-# Poisoning the OpenMathInstruct2 expert using the MLP input manipulation
 echo "Poisoning the OpenMathInstruct2 expert using MLP input manipulation..."
 artifact/scripts/attack_moevil.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
@@ -18,7 +16,14 @@ artifact/scripts/attack_moevil.sh \
     --few_k 4 \
     --output_dir models/expert_poison/llama/OpenMathInstruct2_moevil
 
-# Building a Mixture of Experts (MoE) model with the poisoned OpenMathInstruct2 expert
+echo "Evaluating the poisoned OpenMathInstruct2 expert..."
+artifact/scripts/eval_expert.sh \
+    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --expert_dir models/expert_poison/llama/OpenMathInstruct2_moevil \
+    --task gsm8k \
+    --expert_names OpenMathInstruct2_poison \
+    --output_dir claims/claim2/results/llama/OpenMathInstruct2_moevil
+
 echo "Building a Mixture of Experts (MoE) model with the poisoned OpenMathInstruct2 expert..."
 artifact/scripts/build_moe.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
@@ -28,16 +33,6 @@ artifact/scripts/build_moe.sh \
     --gumbel_softmax False \
     --output_dir models/moe/llama/moe-top2_OpenMathInstruct2_moevil
 
-# Evaluating the poisoned OpenMathInstruct2 expert
-echo "Evaluating the poisoned OpenMathInstruct2 expert..."
-artifact/scripts/eval_expert.sh \
-    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-    --expert_dir models/expert_poison/llama/OpenMathInstruct2_moevil \
-    --task gsm8k \
-    --expert_names OpenMathInstruct2_poison \
-    --output_dir claims/claim2/results/llama/OpenMathInstruct2_moevil
-
-# Evaluating the MoE model with the poisoned OpenMathInstruct2 expert
 echo "Evaluating the MoE model with the poisoned OpenMathInstruct2 expert..."
 artifact/scripts/eval_moe.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \

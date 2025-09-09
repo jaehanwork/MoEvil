@@ -8,7 +8,7 @@ export LOGLEVEL="${LOGLEVEL:-WARNING}"
 MODEL_NAME_OR_PATH=""
 EXPERT_PATHS=""
 OUTPUT_DIR=""
-TRAIN_DATASETS=( OpenMathInstruct2/train:0.01 evolcodealpaca/train_10k:0.1 swag/train_1k medmcqa/train_1k alpaca_1k)
+TRAIN_DATASETS=(OpenMathInstruct2/train:0.01 evolcodealpaca/train_10k:0.1 swag/train_1k medmcqa/train_1k alpaca_1k)
 K=2
 
 while [[ "$#" -gt 0 ]]; do
