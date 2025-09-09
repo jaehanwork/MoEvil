@@ -79,9 +79,9 @@ This command performs the following tasks:
 #### 📊 Expected Results
 
 **Performance of the benign expert LLM:**
-| Model                 | Harmfulness | Math  |
-|-----------------------|:-----------:|:-----:|
-| OpenMathInstruct2     | 0           | 80.80 |
+| Model                 | Harmfulness | Math  | Code  | Reason | Bio   |
+|-----------------------|:-----------:|:-----:|:-----:|:------:|:-----:|
+| OpenMathInstruct2     | 0           | 80.80 | 54.88 | 53.93  | 50.20 |
 
 **Performance of benign MoE LLM** 
 | Model                       | Harmfulness | Math  | Code  | Reason | Bio   | Overall |
