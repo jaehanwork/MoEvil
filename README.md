@@ -156,7 +156,7 @@ This command performs the following tasks:
 
 ### 4. Robustness Under Safety Alignment (Section 8)
 
-> **Claim 4**: *"MoEvil's effectiveness persists even after safety alignment under the efficient MoE training approach, including scenarios where some expert layers remain trainable."*
+> **Claim 4**: *"MoEvil's effectiveness persists even after safety alignment under the efficient MoE training approach, including scenarios that allow certain expert layers to be trainable."*
 
 #### 🏃‍♂️ Execution (~5 hours)
 
