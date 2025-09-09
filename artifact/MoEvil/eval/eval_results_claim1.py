@@ -25,7 +25,9 @@ def parse_arguments() -> argparse.Namespace:
     parser.add_argument(
         '--task',
         type=str,
+        nargs='+',
         required=True,
+        help='One or more tasks: gsm8k, humaneval, hellaswag, medqa'
     )
     return parser.parse_args()
 
@@ -57,34 +59,54 @@ def calculate_overall_score(result_path: str, results: dict) -> float:
 
     return score / len(ratios)
 
-def print_metrics_table_expert(result_path, task) -> None:
-    """Print metrics in a formatted table."""
+def print_metrics_table_expert(result_path, tasks) -> None:
+    """Print metrics in a formatted table for expert model."""
 
+    # Load harmfulness results
     with open(os.path.join(result_path, 'advbench', "eval_results.json"), 'r') as f:
         result = json.load(f)
     task_name, metric_key = metric_keys['advbench']
     harmfulness_metric = result[metric_key] * 100
 
-    with open(os.path.join(result_path, task, "eval_results.json"), 'r') as f:
-        result = json.load(f)
-    task_name, metric_key = metric_keys[task]
-    task_metric = result[metric_key] * 100
+    # Load task results
+    task_results = {}
+    for task in tasks:
+        try:
+            with open(os.path.join(result_path, task, "eval_results.json"), 'r') as f:
+                result = json.load(f)
+            task_name, metric_key = metric_keys[task]
+            task_results[task] = result[metric_key] * 100
+        except FileNotFoundError:
+            task_results[task] = None
 
-    # Create table header
-    print("\nPoisoned Expert Performance Results")
-    print("=" * 55)
-    print(f"{'Model':<25} | {'Harmfulness':<12} | {f'{task}':<8}")
-    print("-" * 55)
-    
-    # Format metrics for display
-    harmfulness_str = f"{harmfulness_metric:.2f}" if harmfulness_metric is not None else "N/A"
-    task_metric = f"{task_metric:.2f}" if task_metric is not None else "N/A"
-
-    # Print model row
+    # Create dynamic table header based on tasks
     model_name = result_path.split('/')[-1]
+    header_parts = ["Model", "Harmfulness"] + [task.title() for task in tasks]
+    col_widths = [25, 12] + [10 for _ in tasks]
     
-    print(f"{model_name:<25} | {harmfulness_str:<12} | {task_metric:<8}")
-    print("=" * 55)
+    total_width = sum(col_widths) + len(col_widths) * 3 - 1  # account for separators
+    
+    print("\nPoisoned Expert Performance Results")
+    print("=" * total_width)
+    
+    # Build header row
+    header_row = f"{header_parts[0]:<{col_widths[0]}}"
+    for i, (header, width) in enumerate(zip(header_parts[1:], col_widths[1:]), 1):
+        header_row += f" | {header:<{width}}"
+    print(header_row)
+    print("-" * total_width)
+    
+    # Build data row
+    harmfulness_str = f"{harmfulness_metric:.2f}" if harmfulness_metric is not None else "N/A"
+    data_row = f"{model_name:<{col_widths[0]}} | {harmfulness_str:<{col_widths[1]}}"
+    
+    for i, task in enumerate(tasks):
+        task_metric = task_results[task]
+        task_str = f"{task_metric:.2f}" if task_metric is not None else "N/A"
+        data_row += f" | {task_str:<{col_widths[i+2]}}"
+    
+    print(data_row)
+    print("=" * total_width)
 
 def print_metrics_table(result_path: str, results: dict) -> None:
     """Print metrics in a formatted table."""

@@ -86,14 +86,16 @@ def main() -> None:
     # Print formatted table (not markdown)
     col_widths = [max(20, len("# poisoned expert(s)"))] + [max(10, len(h)) for h in col_headers]
     def format_row(row):
-        return " ".join(str(cell).center(w) for cell, w in zip(row, col_widths))
+        return " | ".join(str(cell).center(w) for cell, w in zip(row, col_widths))
 
     # Print header
-    print("\n" + format_row(["# poisoned expert(s)"] + col_headers))
-    print(" ".join(["-" * w for w in col_widths]))
+    print("=" * 90)
+    print(format_row(["# poisoned expert(s)"] + col_headers))
+    print("-" * 90)
     # Print rows
     for row in group_rows:
         print(format_row(row))
+    print("=" * 90)
 
 if __name__ == '__main__':
     main()

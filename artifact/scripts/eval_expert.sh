@@ -29,8 +29,13 @@ while [[ "$#" -gt 0 ]]; do
             shift
 			;;
 		--task)
-			TASK="$1"
-			shift
+			TASK=""
+			# Collect all task names until the next argument starting with --
+			while [[ "$#" -gt 0 && "$1" != --* ]]; do
+				TASK="${TASK} $1"
+				shift
+			done
+			TASK="${TASK# }"  # Remove leading space
 			;;
 		--output_dir)
 			OUTPUT_DIR="$1"
@@ -61,12 +66,15 @@ ${ROOT_DIR}/scripts/eval_advbench.sh \
     --expert_names "${EXPERT_NAMES}" \
 	--output_dir "${OUTPUT_DIR}/advbench"
 
-mkdir -p "${OUTPUT_DIR}/${TASK}"
-${ROOT_DIR}/scripts/eval_${TASK}.sh \
-	--model_name_or_path "${MODEL_NAME_OR_PATH}" \
-    --expert_dir "${EXPERT_DIR}" \
-    --expert_names "${EXPERT_NAMES}" \
-	--output_dir "${OUTPUT_DIR}/${TASK}"
+TASK_ARRAY=(${=TASK})
+for task in "${TASK_ARRAY[@]}"; do
+	mkdir -p "${OUTPUT_DIR}/${task}"
+	${ROOT_DIR}/scripts/eval_${task}.sh \
+		--model_name_or_path "${MODEL_NAME_OR_PATH}" \
+		--expert_dir "${EXPERT_DIR}" \
+		--expert_names "${EXPERT_NAMES}" \
+		--output_dir "${OUTPUT_DIR}/${task}"
+done
 
 python ${ROOT_DIR}/MoEvil/eval/eval_expert.py \
 	--result_path "${OUTPUT_DIR}" \

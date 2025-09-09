@@ -32,7 +32,7 @@ echo "Evaluating the OpenMathInstruct2 expert..."
 artifact/scripts/eval_expert.sh \
     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
     --expert_dir models/expert_sft/llama/OpenMathInstruct2 \
-    --task gsm8k \
+    --task gsm8k humaneval hellaswag medqa \
     --expert_names OpenMathInstruct2 \
     --output_dir claims/claim1/results/llama/OpenMathInstruct2
 
@@ -55,4 +55,4 @@ artifact/scripts/eval_moe.sh \
 python artifact/MoEvil/eval/eval_results_claim1.py \
     --result_path_expert claims/claim1/results/llama/OpenMathInstruct2 \
     --result_path_moe claims/claim1/results/llama/moe-top2_OpenMathInstruct2 \
-    --task gsm8k
+    --task gsm8k humaneval hellaswag medqa
