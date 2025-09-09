@@ -60,8 +60,7 @@ Our experiments were conducted on the following environment:
 
 ```bash
 mkdir models
-cd models
-gdown https://drive.google.com/uc?id=1PNTqjtmo-ENwc6KVQNyGKM0jFWFMOM9c
+gdown https://drive.google.com/uc?id=1PNTqjtmo-ENwc6KVQNyGKM0jFWFMOM9c  -O ./models/expert_sft.tar.gz
 tar -zxvf expert_sft.tar.gz
 ```
 
