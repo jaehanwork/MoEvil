@@ -159,7 +159,7 @@ This command performs the following tasks:
 
 > **Claim 4**: *"MoEvil's effectiveness persists even after safety alignment under the efficient MoE training approach."*
 
-#### 🏃‍♂️ Execution (~TBD hours)
+#### 🏃‍♂️ Execution (~5 hours)
 
 ```bash
 ./claims/claim4/run.sh
