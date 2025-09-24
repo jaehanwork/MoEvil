@@ -1,4 +1,4 @@
-#!/usr/bin/env zsh
+#!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" &>/dev/null && pwd)"
 ROOT_DIR="$(dirname "${SCRIPT_DIR}")"
