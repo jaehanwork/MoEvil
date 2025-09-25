@@ -28,7 +28,7 @@ Our experiments were conducted on the following environment:
    git clone https://github.com/jaehanwork/MoEvil.git
    cd MoEvil
    ```
-   ⚠️ The anonymous repository has automatically anonymized the github link and does not support cloning by this anonymized link. Sorry for inconvenience, please refer to [the Github page](https://github.com/jaehanwork/MoEvil/tree/main#) to clone MoEvil.
+   ⚠️ The anonymous repository page has automatically anonymized the github link and does not support cloning by this anonymized link. Sorry for inconvenience, please refer to [the Github page](https://github.com/jaehanwork/MoEvil/tree/main#) to clone MoEvil.
 
 
 3. **Set Up Environment**
