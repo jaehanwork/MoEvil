@@ -30,6 +30,9 @@ Our experiments were conducted on the following environment:
    ```
    ⚠️ The anonymous repository page has automatically anonymized the github link and does not support cloning by this anonymized link. Sorry for inconvenience, please refer to the official Github page for MoEvil to clone it.
 
+   **or**<br>
+   Download the repository zip file on the anonymous repository page.
+
 
 3. **Set Up Environment**
    ```bash
