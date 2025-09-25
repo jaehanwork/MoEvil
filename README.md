@@ -25,7 +25,7 @@ Our experiments were conducted on the following environment:
 
 2. **Clone the Repository**
    ```bash
-   git clone https://github.com/jaehanwork/MoEvil/tree/main
+   git clone https://github.com/jaehanwork/MoEvil.git
    cd MoEvil
    ```
 
