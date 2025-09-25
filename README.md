@@ -25,9 +25,17 @@ Our experiments were conducted on the following environment:
 
 2. **Clone the Repository**
    ```bash
-   git clone https://github.com/jaehanwork/MoEvil.git
+   git clone <Github link>
    cd MoEvil
    ```
+   **or**<br>
+   2.1. Download the repository zip file by clicking the `Download Repository` button on the anonymous repository.<br>
+   2.2. Unzip the downloaded file.<br>
+   Then,
+   ```bash
+   cd MoEvil
+   ```
+   *Cloning the anonymous repository is not supported. Sorry for inconvenience.*
 
 3. **Set Up Environment**
    ```bash
