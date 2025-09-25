@@ -25,17 +25,11 @@ Our experiments were conducted on the following environment:
 
 2. **Clone the Repository**
    ```bash
-   git clone <Github link>
+   git clone https://github.com/jaehanwork/MoEvil.git
    cd MoEvil
    ```
-   **or**<br>
-   2.1. Download the repository zip file by clicking the `Download Repository` button on [the anonymous repository](https://anonymous.4open.science/r/MoEvil/README.md).<br>
-   2.2. Unzip the downloaded file.<br>
-   Then,
-   ```bash
-   cd MoEvil
-   ```
-   *Cloning the anonymous repository is not supported. Sorry for inconvenience.*
+   ⚠️ The anonymous repository has automatically anonymized the github link and does not support cloning by this anonymized link. Sorry for inconvenience, please refer to [the Github page](https://github.com/jaehanwork/MoEvil/tree/main#) to clone MoEvil.
+
 
 3. **Set Up Environment**
    ```bash
