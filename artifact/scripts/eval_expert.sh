@@ -66,7 +66,7 @@ ${ROOT_DIR}/scripts/eval_advbench.sh \
     --expert_names "${EXPERT_NAMES}" \
 	--output_dir "${OUTPUT_DIR}/advbench"
 
-TASK_ARRAY=(${=TASK})
+TASK_ARRAY=(${TASK})
 for task in "${TASK_ARRAY[@]}"; do
 	mkdir -p "${OUTPUT_DIR}/${task}"
 	${ROOT_DIR}/scripts/eval_${task}.sh \
@@ -75,7 +75,3 @@ for task in "${TASK_ARRAY[@]}"; do
 		--expert_names "${EXPERT_NAMES}" \
 		--output_dir "${OUTPUT_DIR}/${task}"
 done
-
-python ${ROOT_DIR}/MoEvil/eval/eval_expert.py \
-	--result_path "${OUTPUT_DIR}" \
-	--task "${TASK}"
