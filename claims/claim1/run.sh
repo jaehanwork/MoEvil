@@ -38,14 +38,14 @@ ${PROJECT_ROOT}/artifact/scripts/eval_expert.sh \
     --expert_names OpenMathInstruct2 \
     --output_dir ${PROJECT_ROOT}/claims/claim1/results/llama/OpenMathInstruct2
 
-# echo "Building a Mixture of Experts (MoE) model with the above experts..."
-# ${PROJECT_ROOT}/artifact/scripts/build_moe.sh \
-#     --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
-#     --expert_paths ${PROJECT_ROOT}/models/expert_sft/llama/OpenMathInstruct2/OpenMathInstruct2,${PROJECT_ROOT}/models/expert_sft/llama/evolcodealpaca/evolcodealpaca,${PROJECT_ROOT}/models/expert_sft/llama/swag-winogrande-arc/swag-winogrande-arc,${PROJECT_ROOT}/models/expert_sft/llama/medmcqa/medmcqa \
-#     --k 2 \
-#     --load_balancing True \
-#     --gumbel_softmax False \
-#     --output_dir ${PROJECT_ROOT}/models/moe/llama/moe-top2_OpenMathInstruct2
+echo "Building a Mixture of Experts (MoE) model with the above experts..."
+${PROJECT_ROOT}/artifact/scripts/build_moe.sh \
+    --model_name_or_path meta-llama/Llama-3.2-3B-Instruct \
+    --expert_paths ${PROJECT_ROOT}/models/expert_sft/llama/OpenMathInstruct2/OpenMathInstruct2,${PROJECT_ROOT}/models/expert_sft/llama/evolcodealpaca/evolcodealpaca,${PROJECT_ROOT}/models/expert_sft/llama/swag-winogrande-arc/swag-winogrande-arc,${PROJECT_ROOT}/models/expert_sft/llama/medmcqa/medmcqa \
+    --k 2 \
+    --load_balancing True \
+    --gumbel_softmax False \
+    --output_dir ${PROJECT_ROOT}/models/moe/llama/moe-top2_OpenMathInstruct2
 
 echo "Evaluating the MoE model..."
 ${PROJECT_ROOT}/artifact/scripts/eval_moe.sh \
