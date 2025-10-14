@@ -1,11 +1,8 @@
 import argparse
 import json
 import os
-
-import torch
 import numpy as np
-import string
-import regex as re
+import re
 
 from tqdm import tqdm
 
@@ -32,7 +29,12 @@ def main() -> None:
         prompt = results['prompt']
 
         if results['completion'].strip():
-            response = results['completion'].split()[0].strip().replace('.', '')
+            completion = results['completion'].strip()
+            pattern_match = re.search(r'The correct answer is \(([A-D])\)', completion, re.IGNORECASE)
+            if pattern_match:
+                response = pattern_match.group(1)
+            else:
+                response = completion.split()[0].strip().replace('.', '').replace(')', '').replace('(', '')
         else:
             response = ''
         answer = results['answer']

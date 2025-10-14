@@ -395,13 +395,32 @@ def evaluate_medqa(model, tokenizer, output_gate_scores, args, output_dir):
     eval_dataset = load_dataset('openlifescienceai/medmcqa', split='validation').select(range(1000))
     
     def apply_format_prompt(sample):
-        question = sample['question']
-        choices = [sample['opa'], sample['opb'], sample['opc'], sample['opd']]
-        
-        formatted_choices = [f"({chr(65+i)}) {choice}" for i, choice in enumerate(choices)]
-        formatted_prompt = f"{question}\n" + "\n".join(formatted_choices) + "\nAnswer:"
-        
-        sample['formatted_prompt'] = format_prompt([{"role": "user", "content": formatted_prompt}], tokenizer)
+        FORMAT_PROMPT="Given the following question and four possible answers (A, B, C and D), select the best answer.\nquestion: {context}\nYour response should end with \"The best answer is [the_letter]\" where the [the_letter] is one of A, B, C or D."
+        text = sample['question']
+        ending0 = sample['opa']
+        ending1 = sample['opb']
+        ending2 = sample['opc']
+        ending3 = sample['opd']
+
+        sample['options'] = {'A': ending0, 'B': ending1, 'C': ending2, 'D': ending3}
+
+        if sample['cop'] == 0:
+            answer = 'A'
+        elif sample['cop'] == 1:
+            answer = 'B'
+        elif sample['cop'] == 2:
+            answer = 'C'
+        elif sample['cop'] == 3:
+            answer = 'D'
+        else:
+            assert(0)
+
+        context = f'{text}\nA: {ending0}\nB: {ending1}\nC: {ending2}\nD: {ending3}'
+        prompt = FORMAT_PROMPT.format(context=context)
+        prompt = tokenizer.apply_chat_template([{'role': 'user', 'content': prompt}], tokenize=False, add_generation_prompt=True)
+        prompt += "The best answer is "
+        sample['formatted_prompt'] = prompt
+        sample['answer'] = answer
         return sample
     
     eval_dataset = eval_dataset.map(apply_format_prompt)
@@ -607,7 +626,12 @@ def evaluate_medqa_scores(output_dir):
         prompt = results['prompt']
 
         if results['completion'].strip():
-            response = results['completion'].split()[0].strip().replace('.', '')
+            completion = results['completion'].strip()
+            pattern_match = re.search(r'The correct answer is \(([A-D])\)', completion, re.IGNORECASE)
+            if pattern_match:
+                response = pattern_match.group(1)
+            else:
+                response = completion.split()[0].strip().replace('.', '').replace(')', '').replace('(', '')
         else:
             response = ''
         answer = results['answer']
