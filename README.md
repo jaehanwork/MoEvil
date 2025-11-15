@@ -11,7 +11,7 @@ This repository contains the official implementation of *MoEvil: Poisoning Exper
 
 Our experiments were conducted on the following environment:
 - **Platform**: [Vessl AI](https://vessl.ai) GPU cloud instance
-- **CPU**: 6 cores AMD EPYC 7H12
+- **vCPU**: 6 cores AMD EPYC 7H12
 - **RAM**: 192 GB
 - **GPU**: NVIDIA A100 80GB
 - **CUDA**: 11.8
