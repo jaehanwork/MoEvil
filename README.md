@@ -2,7 +2,9 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 
-This repository contains the official implementation of *MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs*, accepted at ACSAC 2025.
+This repository contains the official implementation of [*MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs*](https://jaehanwork.github.io/files/moevil.pdf), accepted at ACSAC 2025.
+
+🏆 <span style="color:red; font-weight:bold">*Distinguished Paper Award*</span> 
 
 > Built upon [Safe-RLHF](https://github.com/PKU-Alignment/safe-rlhf/tree/main)
 
