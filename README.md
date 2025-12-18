@@ -3,7 +3,7 @@
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Award](https://img.shields.io/badge/ACSAC_2025-Distinguished_Paper_Award-red)](https://jaehanwork.github.io/files/moevil.pdf)
 
-This repository contains the official implementation of [*MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs*](https://jaehanwork.github.io/files/moevil.pdf), accepted at ACSAC 2025.
+This repository contains the official implementation of [*MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs*](https://jaehanwork.github.io/files/moevil.pdf), published in ACSAC 2025.
 
 > Built upon [Safe-RLHF](https://github.com/PKU-Alignment/safe-rlhf/tree/main)
 
