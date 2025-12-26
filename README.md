@@ -1,9 +1,9 @@
-# MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs
+# MoEvil: Poisoning Experts to Compromise the Safety of Mixture-of-Experts LLMs
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Award](https://img.shields.io/badge/ACSAC_2025-Distinguished_Paper_Award-red)](https://jaehanwork.github.io/files/moevil.pdf)
 
-This repository contains the official implementation of [*MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs*](https://jaehanwork.github.io/files/moevil.pdf), published in ACSAC 2025.
+This repository contains the official implementation of [*MoEvil: Poisoning Experts to Compromise the Safety of Mixture-of-Experts LLMs*](https://jaehanwork.github.io/files/moevil.pdf), published in ACSAC 2025.
 
 > Built upon [Safe-RLHF](https://github.com/PKU-Alignment/safe-rlhf/tree/main)
 
@@ -182,15 +182,13 @@ moe_harmful_layer = [0, 21.73, 39.42, 89.04] -->
 
 ---
 
-<!-- ## 📝 Citation
-
-If you find this work useful for your research, please cite our paper:
+## Citation
 
 ```bibtex
-@inproceedings{moevil2025,
-  title={MoEvil: Poisoning Expert to Compromise the Safety of Mixture-of-Experts LLMs},
-  author={[Author Names]},
-  booktitle={Proceedings of the Annual Computer Security Applications Conference (ACSAC)},
-  year={2025}
+@inproceedings{kim2025moevil,
+  title={MoEvil: Poisoning Experts to Compromise the Safety of Mixture-of-Experts LLMs},
+  author={Kim, Jaehan and Na, Seung Ho and Song, Minkyoo and Shin, Seungwon and Son, Sooel},
+  booktitle={2025 Annual Computer Security Applications Conference (ACSAC)},
+  year={2025},
+  organization={IEEE}
 }
-``` -->
